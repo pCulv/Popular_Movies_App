@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         // Child layout size will be fixed in the RecyclerView
         mMovieList.setHasFixedSize(true);
 
-        mAdapter = new MovieAdapter();
+        mAdapter = new MovieAdapter(this);
 
         mMovieList.setAdapter(mAdapter);
     }
