@@ -1,10 +1,6 @@
 package com.example.phil.popularmovies;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +10,15 @@ import android.view.MenuItem;
 import com.example.phil.popularmovies.ui.MovieAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>>{
+public class MainActivity extends AppCompatActivity {
 
     private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
@@ -47,6 +47,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+    private void sendNetworkRequest(Movie movie) {
+
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(APIClient.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        Retrofit retrofit = builder.build();
+
+        APIClient client = retrofit.create(APIClient.class);
+        Call<Movie> call = client.getId("id");
+
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                if (response.isSuccessful()) {
+                mMovieList.setAdapter(mAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -61,32 +87,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return true;
     }
 
-    public static class MovieLoader extends AsyncTaskLoader {
 
-        public MovieLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        public Object loadInBackground() {
-
-
-            return null;
-        }
-    }
-
-    @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-
-    }
 }

@@ -53,9 +53,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public void bindMovie(Movie movie) {
             mMovie = movie;
-//            movie.setCachedPosterPath("http://image.tmdb.org/t/p/w" + "185" + "/"
-//                    + "nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
-            Picasso.with(movieItemView.getContext()).load("http://i.imgur.com/DvpvklR.png")
+            movie.setCachedPosterPath("http://image.tmdb.org/t/p/w" + "185" + "/"
+                    + "nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
+            Picasso.with(movieItemView.getContext()).load(movie.getCachedPosterPath())
                     .into(movieItemView);
 
         }
