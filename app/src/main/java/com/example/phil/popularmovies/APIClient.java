@@ -18,12 +18,6 @@ public interface APIClient {
     public static final String KEY_PARAM = "?api_key";
 
 
-    @GET("/movie/popular")
-    Call<List<Movie>> getPopular();
-
-    @GET("/movie/top_rated")
-    Call<List<Movie>> getTopRated();
-
     @GET("/movie/{id}")
     Call<List<Movie>> getId(@Path("id") String id);
 

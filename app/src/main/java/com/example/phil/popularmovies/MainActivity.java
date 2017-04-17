@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MovieAdapter mAdapter;
+//    private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
 
     private List<Movie> mMovies = new ArrayList<>();
@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // Child layout size will be fixed in the RecyclerView
         mMovieList.setHasFixedSize(true);
 
-      mAdapter = new MovieAdapter(MainActivity.this, mMovies);
-
-
+//        mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
         //Retrofit network request
 
@@ -63,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 List<Movie> movies = response.body();
 
-                mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+               MovieAdapter mAdapter = new MovieAdapter(MainActivity.this, mMovies);
+
+                mMovieList.setAdapter(mAdapter);
 
             }
 
