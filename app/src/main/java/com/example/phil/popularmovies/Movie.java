@@ -32,6 +32,16 @@ public class Movie implements Parcelable {
     private String voteAverage;
     @SerializedName("release_date")
     private String releaseDate = "";
+    private String popularity;
+
+    public String getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(String popularity) {
+        this.popularity = popularity;
+    }
+
     private String id;
     private int runtime;
     private String cachedPosterPath;

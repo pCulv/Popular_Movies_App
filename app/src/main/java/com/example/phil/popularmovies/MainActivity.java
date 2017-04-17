@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,11 +24,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private MovieAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
 
     private List<Movie> mMovies = new ArrayList<>();
-
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,28 +47,35 @@ public class MainActivity extends AppCompatActivity {
 
 //        mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
+//        mMovieList.setAdapter(mAdapter);
+
         //Retrofit network request
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(APIClient.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
 
-        Retrofit retrofit = builder.build();
+        Retrofit retrofit = builder.client(httpClient.build()).build();
 
+        // Create REST adapter which points to API endpoint
         APIClient client = retrofit.create(APIClient.class);
-        Call<List<Movie>> call = client.getId("movie/550?api_key=50702822a126f3d3f8288773eab942a6");
+
+        // Fetch Popular Movies
+        Call<List<Movie>> call = client.getMovies("popular" + APIClient.KEY_PARAM + APIClient.API_KEY);
+
+        Log.d("Url",APIClient.BASE_URL + call);
+
 
         call.enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 List<Movie> movies = response.body();
 
-               MovieAdapter mAdapter = new MovieAdapter(MainActivity.this, mMovies);
-
-                mMovieList.setAdapter(mAdapter);
+                mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
 
             }
-
             @Override
             public void onFailure(Call<List<Movie>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "No movies found", Toast.LENGTH_SHORT).show();
