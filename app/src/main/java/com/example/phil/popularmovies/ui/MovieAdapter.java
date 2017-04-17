@@ -13,7 +13,7 @@ import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by phil on 4/1/17.
@@ -25,13 +25,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private Context mContext;
-    private ArrayList<Movie> mMovies;
+    private List<Movie> mMovies;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movies) {
+    public MovieAdapter(Context context, List<Movie> movies) {
         mContext = context;
         mMovies = movies;
     }
-    public static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
         Movie mMovie;
 
@@ -53,9 +53,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public void bindMovie(Movie movie) {
             mMovie = movie;
-            movie.setCachedPosterPath("http://image.tmdb.org/t/p/w" + "185" + "/"
-                    + "nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
-            Picasso.with(movieItemView.getContext()).load(movie.getCachedPosterPath())
+//            movie.setCachedPosterPath("http://image.tmdb.org/t/p/w" + "185" + "/"
+//                    + "nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
+            Picasso.with(mContext).load("http://image.tmdb.org/t/p/w/185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg")
+                    .placeholder(R.drawable.deadpool)
+                    .error(R.mipmap.ic_launcher)
                     .into(movieItemView);
 
         }

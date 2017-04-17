@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 public interface APIClient {
 
 
-    public static final String BASE_URL = "https://api.themoviedb.org/3";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public static final String API_KEY = "";
     public static final String KEY_PARAM = "?api_key";
 
@@ -25,6 +25,6 @@ public interface APIClient {
     Call<List<Movie>> getTopRated();
 
     @GET("/movie/{id}")
-    Call<Movie> getId(@Path("id") String id);
+    Call<List<Movie>> getId(@Path("id") String id);
 
 }

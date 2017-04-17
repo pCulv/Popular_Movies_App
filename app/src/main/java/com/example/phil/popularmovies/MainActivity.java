@@ -6,10 +6,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.phil.popularmovies.ui.MovieAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
 
-    private ArrayList<Movie> mMovies = new ArrayList<>();
+    private List<Movie> mMovies = new ArrayList<>();
 
 
     @Override
@@ -41,13 +43,11 @@ public class MainActivity extends AppCompatActivity {
         // Child layout size will be fixed in the RecyclerView
         mMovieList.setHasFixedSize(true);
 
-        mAdapter = new MovieAdapter(MainActivity.this, mMovies);
+      mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
-        mMovieList.setAdapter(mAdapter);
 
-    }
 
-    private void sendNetworkRequest(Movie movie) {
+        //Retrofit network request
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(APIClient.BASE_URL)
@@ -56,21 +56,23 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = builder.build();
 
         APIClient client = retrofit.create(APIClient.class);
-        Call<Movie> call = client.getId("id");
+        Call<List<Movie>> call = client.getId("movie/550?api_key=50702822a126f3d3f8288773eab942a6");
 
-        call.enqueue(new Callback<Movie>() {
+        call.enqueue(new Callback<List<Movie>>() {
             @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if (response.isSuccessful()) {
-                mMovieList.setAdapter(mAdapter);
-                }
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                List<Movie> movies = response.body();
+
+                mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+
             }
 
             @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
-
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "No movies found", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override
