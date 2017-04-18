@@ -53,12 +53,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public void bindMovie(Movie movie) {
             mMovie = movie;
-//            movie.setCachedPosterPath("http://image.tmdb.org/t/p/w" + "185" + "/"
-//                    + "nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
-            Picasso.with(mContext).load("http://image.tmdb.org/t/p/w/185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg")
-                    .placeholder(R.drawable.deadpool)
-                    .error(R.mipmap.ic_launcher)
-                    .into(movieItemView);
+            String BASE_URL = "http://image.tmdb.org/t/p/";
+
+            movie.setCachedPosterPath(BASE_URL + String.valueOf(imageWidth) + "/" + movie.getPosterPath());
+
+            Picasso.with(mContext).load(movie.getCachedPosterPath()).into(movieItemView);
 
         }
     }
@@ -87,6 +86,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return mMovies.size();
+    }
+
+    int imageWidth;
+
+    public void setImageWidth(int imageWidth) {
+        //make poster size more pixel perfect
+        if (imageWidth>700) {
+            this.imageWidth = 500;
+        }else if(imageWidth>500){
+            this.imageWidth = 500;
+        }else if (imageWidth>300){
+            this.imageWidth=342;
+        }else{
+            this.imageWidth=185;
+        }
+
     }
 
 

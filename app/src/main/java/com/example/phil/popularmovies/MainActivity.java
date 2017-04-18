@@ -45,16 +45,16 @@ public class MainActivity extends AppCompatActivity {
         // Child layout size will be fixed in the RecyclerView
         mMovieList.setHasFixedSize(true);
 
-//        mAdapter = new MovieAdapter(MainActivity.this, mMovies);
+        mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
-//        mMovieList.setAdapter(mAdapter);
+        mMovieList.setAdapter(mAdapter);
 
         //Retrofit network request
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(APIClient.BASE_URL)
+                .baseUrl("https://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create());
 
         Retrofit retrofit = builder.client(httpClient.build()).build();
@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
         // Create REST adapter which points to API endpoint
         APIClient client = retrofit.create(APIClient.class);
 
+        // TODO: Implement switch statement based on if the user decides to sort by Popular
+        // or top rated movies
         // Fetch Popular Movies
-        Call<List<Movie>> call = client.getMovies("popular" + APIClient.KEY_PARAM + APIClient.API_KEY);
-
-        Log.d("Url",APIClient.BASE_URL + call);
+        Call<List<Movie>> call = client.getPopular("50702822a126f3d3f8288773eab942a6");
 
 
         call.enqueue(new Callback<List<Movie>>() {
@@ -74,11 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 List<Movie> movies = response.body();
 
                 mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
-
+                Log.i("Url",response.raw().toString());
             }
             @Override
             public void onFailure(Call<List<Movie>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "No movies found", Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
             }
         });
 
