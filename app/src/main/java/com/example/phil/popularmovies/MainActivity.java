@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.phil.popularmovies.ui.MovieAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+        Gson gson =
+                new GsonBuilder()
+                        .registerTypeAdapter(Movie.class, new Deserializer())
+                        .create();
+
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create());
+                .addConverterFactory(GsonConverterFactory.create(gson));
 
         Retrofit retrofit = builder.client(httpClient.build()).build();
 
@@ -68,10 +75,12 @@ public class MainActivity extends AppCompatActivity {
         Call<List<Movie>> call = client.getPopular("50702822a126f3d3f8288773eab942a6");
 
 
+
         call.enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 List<Movie> movies = response.body();
+
 
                 mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
                 Log.i("Url",response.raw().toString());

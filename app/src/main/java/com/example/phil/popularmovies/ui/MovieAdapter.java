@@ -55,9 +55,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             mMovie = movie;
             String BASE_URL = "http://image.tmdb.org/t/p/";
 
-            movie.setCachedPosterPath(BASE_URL + String.valueOf(imageWidth) + "/" + movie.getPosterPath());
+            movie.setPosterPath(BASE_URL + String.valueOf(imageWidth) + "/" + movie.getPosterPath());
 
-            Picasso.with(mContext).load(movie.getCachedPosterPath()).into(movieItemView);
+            Picasso.with(mContext).load(movie.getPosterPath()).into(movieItemView);
 
         }
     }
