@@ -11,7 +11,12 @@ import java.util.List;
 
 public class Movie implements Parcelable
 {
-
+    @SerializedName("results")
+    @Expose
+    private String[] results;
+    @SerializedName("page")
+    @Expose
+    private Integer page;
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -85,6 +90,22 @@ public class Movie implements Parcelable
 
     }
             ;
+
+    public String[] getResults() {
+        return results;
+    }
+
+    public void setResults(String[] results) {
+        this.results = results;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
 
     public String getPosterPath() {
         return posterPath;
