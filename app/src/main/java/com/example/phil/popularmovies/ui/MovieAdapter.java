@@ -2,6 +2,7 @@ package com.example.phil.popularmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +29,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private List<Movie> mMovies;
 
     public MovieAdapter(Context context, List<Movie> movies) {
-        mContext = context;
-        mMovies = movies;
+        this.mContext = context;
+        this.mMovies = movies;
     }
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
@@ -50,16 +51,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             context.startActivity(userClick);
 
         }
-
-        public void bindMovie(Movie movie) {
-            mMovie = movie;
-            String BASE_URL = "http://image.tmdb.org/t/p/";
-
-            movie.setPosterPath(BASE_URL + String.valueOf(imageWidth) + "/" + movie.getPosterPath());
-
-            Picasso.with(mContext).load(movie.getPosterPath()).into(movieItemView);
-
-        }
     }
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -78,9 +69,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
         Log.d(TAG, "#" + position);
-        Movie movieImage = mMovies.get(position);
 
-        holder.bindMovie(movieImage);
+        final Movie movie = mMovies.get(position);
+        Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
+                .appendEncodedPath(movie.getPosterPath())
+                .build();
+
+        Picasso.with(mContext).load(builder).into(holder.movieItemView);
+
     }
 
     @Override

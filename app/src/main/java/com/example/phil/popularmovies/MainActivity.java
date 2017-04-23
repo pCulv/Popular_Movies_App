@@ -10,7 +10,9 @@ import android.widget.Toast;
 import com.example.phil.popularmovies.ui.MovieAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+        Type listType = new TypeToken<List<Movie>>(){}.getType();
+
+
         Gson gson =
                 new GsonBuilder()
-                        .registerTypeAdapter(Movie.class, new Deserializer())
+                        .registerTypeAdapter(listType, new Deserializer())
                         .create();
-
-
 
             Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl("https://api.themoviedb.org/3/")
@@ -76,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             call.enqueue(new Callback<List<Movie>>() {
+
                 @Override
                 public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                     List<Movie> movies = response.body();
-
 
                     mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
                     Log.i("Url", response.raw().toString());
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<List<Movie>> call, Throwable t) {
                     Toast.makeText(MainActivity.this, "No movies found", Toast.LENGTH_SHORT).show();
+
                     t.printStackTrace();
                 }
             });
