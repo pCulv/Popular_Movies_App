@@ -40,7 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             super(itemView);
 
             movieItemView = (ImageView) itemView.findViewById(R.id.movie_poster);
-            itemView.setOnClickListener(this);
+            movieItemView.setOnClickListener(this);
         }
 
         @Override

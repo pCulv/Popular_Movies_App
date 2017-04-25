@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.phil.popularmovies.ui.MovieAdapter;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
+    private Call<List<Movie>> mCall;
+    private APIClient mClient;
 
     private List<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -55,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        Type listType = new TypeToken<List<Movie>>(){}.getType();
+        Type listType = new TypeToken<List<Movie>>() {
+        }.getType();
 
 
         Gson gson =
@@ -63,22 +68,55 @@ public class MainActivity extends AppCompatActivity {
                         .registerTypeAdapter(listType, new Deserializer())
                         .create();
 
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/3/")
-                    .addConverterFactory(GsonConverterFactory.create(gson));
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org/3/")
+                .addConverterFactory(GsonConverterFactory.create(gson));
 
-            Retrofit retrofit = builder.client(httpClient.build()).build();
+        Retrofit retrofit = builder.client(httpClient.build()).build();
 
-            // Create REST adapter which points to API endpoint
-            APIClient client = retrofit.create(APIClient.class);
+        // Create REST adapter which points to API endpoint
+        mClient = retrofit.create(APIClient.class);
 
-            // TODO: Implement switch statement based on if the user decides to sort by Popular
-            // or top rated movies
-            // Fetch Popular Movies
-            Call<List<Movie>> call = client.getPopular("50702822a126f3d3f8288773eab942a6");
+        // Fetch Popular Movies
+        mCall = mClient.getPopular(getString(R.string.api_key));
 
 
-            call.enqueue(new Callback<List<Movie>>() {
+        mCall.enqueue(new Callback<List<Movie>>() {
+
+            @Override
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                List<Movie> movies = response.body();
+
+                mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                Log.i("Url", response.raw().toString());
+            }
+
+            @Override
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    // Handles click events of menu items and will sort movies by popularity or top rating/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+    // If user clicks "Sort by Most Popular" in option menu
+        if (id == R.id.action_sort_by_popular) {
+            //api call for most popular
+            mCall = mClient.getPopular(getString(R.string.api_key));
+
+            mCall.enqueue(new Callback<List<Movie>>() {
 
                 @Override
                 public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
@@ -90,14 +128,37 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<List<Movie>> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "No movies found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
 
                     t.printStackTrace();
                 }
             });
+        }
+        // If user clicks "Sort by Rating" in options menu
+        if (id == R.id.action_sort_by_rating){
+            //api call for top rated
+            mCall = mClient.getTopRated(getString(R.string.api_key));
 
+            mCall.enqueue(new Callback<List<Movie>>() {
+
+                @Override
+                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                    List<Movie> movies = response.body();
+
+                    mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                    Log.i("Url", response.raw().toString());
+                }
+
+                @Override
+                public void onFailure(Call<List<Movie>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+
+                    t.printStackTrace();
+                }
+            });
         }
 
-
+        return super.onOptionsItemSelected(item);
     }
+}
 
