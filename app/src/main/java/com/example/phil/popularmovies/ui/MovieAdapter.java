@@ -12,9 +12,12 @@ import android.widget.ImageView;
 
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import butterknife.BindView;
+
+import static com.squareup.picasso.Picasso.with;
 
 /**
  * Created by phil on 4/1/17.
@@ -28,13 +31,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private Context mContext;
     private List<Movie> mMovies;
 
+    @BindView(R.id.details_poster)
+    ImageView posterImageView;
+
     public MovieAdapter(Context context, List<Movie> movies) {
         this.mContext = context;
         this.mMovies = movies;
     }
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
-
+        Movie movie;
 
 
         public MovieViewHolder(View itemView) {
@@ -47,12 +53,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
 
+
             Context context = itemView.getContext();
             Intent userClick = new Intent(context, DetailActivity.class);
-            userClick.putExtra("original_title", mMovies.get(position).getOriginalTitle());
-            userClick.putExtra("release_date", mMovies.get(position).getReleaseDate());
-            userClick.putExtra("vote_average", mMovies.get(position).getVoteAverage());
-            userClick.putExtra("overview", mMovies.get(position).getOverview());
+            userClick.putExtra("original_title", mMovies.get(getAdapterPosition()).getOriginalTitle());
+            userClick.putExtra("release_date", mMovies.get(getAdapterPosition()).getReleaseDate());
+            userClick.putExtra("vote_average", mMovies.get(getAdapterPosition()).getVoteAverage());
+            userClick.putExtra("overview", mMovies.get(getAdapterPosition()).getOverview());
             context.startActivity(userClick);
 
         }
@@ -80,7 +87,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 .appendEncodedPath(movie.getPosterPath())
                 .build();
 
-        Picasso.with(mContext).load(builder).into(holder.movieItemView);
+        with(mContext).load(builder).into(holder.movieItemView);
 
     }
 

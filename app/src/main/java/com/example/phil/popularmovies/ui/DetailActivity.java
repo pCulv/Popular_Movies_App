@@ -1,31 +1,24 @@
 package com.example.phil.popularmovies.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.phil.popularmovies.APIClient;
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
 
 public class DetailActivity extends AppCompatActivity {
-    private Call<List<Movie>> mCall;
-    private APIClient mClient;
-    private Context mContext;
+
     private Movie movieData = new Movie();
     private List<Movie> mMovies;
-    int position;
+
 
     @BindView(R.id.movie_title)
     TextView movieTitleView;
@@ -57,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
         String overview;
 
 
+
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
 
@@ -71,16 +65,13 @@ public class DetailActivity extends AppCompatActivity {
             descriptionView.setText(overview);
 
 
+
         }
 
 
-        Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
-                .appendEncodedPath(movieData.getPosterPath()).build();
 
-        Picasso.with(this)
-                .load(builder)
-                .into(posterImageView);
 
+//        Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(posterImageView);
     }
 
 
