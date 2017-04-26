@@ -60,6 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             userClick.putExtra("release_date", mMovies.get(getAdapterPosition()).getReleaseDate());
             userClick.putExtra("vote_average", mMovies.get(getAdapterPosition()).getVoteAverage());
             userClick.putExtra("overview", mMovies.get(getAdapterPosition()).getOverview());
+            userClick.putExtra("poster_path", mMovies.get(getAdapterPosition()).getPosterPath());
             context.startActivity(userClick);
 
         }
@@ -97,10 +98,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     int imageWidth;
-    int position;
-    public void getMovieData(int position) {
 
-    }
     public void setImageWidth(int imageWidth) {
         //make poster size more pixel perfect
         if (imageWidth>700) {

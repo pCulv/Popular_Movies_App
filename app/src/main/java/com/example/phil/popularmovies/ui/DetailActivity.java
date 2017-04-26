@@ -1,6 +1,7 @@
 package com.example.phil.popularmovies.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -8,8 +9,7 @@ import android.widget.TextView;
 
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
-
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity {
 
     private Movie movieData = new Movie();
-    private List<Movie> mMovies;
+
 
 
     @BindView(R.id.movie_title)
@@ -65,13 +65,16 @@ public class DetailActivity extends AppCompatActivity {
             descriptionView.setText(overview);
 
 
+            Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
+                    .appendEncodedPath(movieData.getPosterPath()).build();
+
+            Picasso.with(this)
+                    .load(builder)
+                    .into(posterImageView);
 
         }
 
 
-
-
-//        Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(posterImageView);
     }
 
 
