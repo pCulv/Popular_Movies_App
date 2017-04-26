@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         //Xml reference for the RecyclerView
         mMovieList = (RecyclerView) findViewById(R.id.recyclerView);
         //Layout manager for movie_list_item set to display items in a grid with a span of 2
@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
         mMovieList.setAdapter(mAdapter);
+
+
 
         //Retrofit network request
 

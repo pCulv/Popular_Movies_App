@@ -34,7 +34,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
-        Movie mMovie;
+
+
 
         public MovieViewHolder(View itemView) {
             super(itemView);
@@ -45,9 +46,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
+
             Context context = itemView.getContext();
             Intent userClick = new Intent(context, DetailActivity.class);
-            userClick.putExtra("movie", mMovie);
+            userClick.putExtra("original_title", mMovies.get(position).getOriginalTitle());
+            userClick.putExtra("release_date", mMovies.get(position).getReleaseDate());
+            userClick.putExtra("vote_average", mMovies.get(position).getVoteAverage());
+            userClick.putExtra("overview", mMovies.get(position).getOverview());
             context.startActivity(userClick);
 
         }
@@ -85,7 +90,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     int imageWidth;
+    int position;
+    public void getMovieData(int position) {
 
+    }
     public void setImageWidth(int imageWidth) {
         //make poster size more pixel perfect
         if (imageWidth>700) {

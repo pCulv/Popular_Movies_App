@@ -18,8 +18,6 @@ public interface APIClient {
     @GET("/3/movie/top_rated")
     Call<List<Movie>> getTopRated(@Query("api_key") String API_KEY);
 
-    @GET("/3/movie/{movie_id}")
-    Call<List<Movie>> getDetails(@Query("api_key") String API_KEY);
 
 
 
