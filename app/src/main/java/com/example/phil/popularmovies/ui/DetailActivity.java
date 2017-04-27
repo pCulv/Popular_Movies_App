@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private Movie movieData = new Movie();
+
 
 
 
@@ -54,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
 
+
         if (bundle != null) {
             originalTitle = bundle.getString("original_title");
             movieTitleView.setText(originalTitle);
@@ -64,16 +65,16 @@ public class DetailActivity extends AppCompatActivity {
             overview = bundle.getString("overview");
             descriptionView.setText(overview);
 
-
-            Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
-                    .appendEncodedPath(movieData.getPosterPath()).build();
-
-            Picasso.with(this)
-                    .load(builder)
-                    .into(posterImageView);
-
         }
 
+        Movie movieData = getIntent().getParcelableExtra("poster_path");
+
+        Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
+                .appendEncodedPath().build();
+
+        Picasso.with(this)
+                .load("http://image.tmdb.org/t/p/w500//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg ")
+                .into(posterImageView);
 
     }
 

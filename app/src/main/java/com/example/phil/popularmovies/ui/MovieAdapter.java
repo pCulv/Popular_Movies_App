@@ -43,6 +43,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Movie movie;
 
 
+
         public MovieViewHolder(View itemView) {
             super(itemView);
 
@@ -52,15 +53,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
-
+            movie = new Movie();
+            Movie moviePosition = mMovies.get(getAdapterPosition());
 
             Context context = itemView.getContext();
             Intent userClick = new Intent(context, DetailActivity.class);
-            userClick.putExtra("original_title", mMovies.get(getAdapterPosition()).getOriginalTitle());
-            userClick.putExtra("release_date", mMovies.get(getAdapterPosition()).getReleaseDate());
-            userClick.putExtra("vote_average", mMovies.get(getAdapterPosition()).getVoteAverage());
-            userClick.putExtra("overview", mMovies.get(getAdapterPosition()).getOverview());
-            userClick.putExtra("poster_path", mMovies.get(getAdapterPosition()).getPosterPath());
+            userClick.putExtra("original_title", moviePosition.getOriginalTitle());
+            userClick.putExtra("release_date", moviePosition.getReleaseDate());
+            userClick.putExtra("vote_average", moviePosition.getVoteAverage());
+            userClick.putExtra("overview",moviePosition.getOverview());
+            userClick.putExtra("poster_path", moviePosition.getVoteAverage());
             context.startActivity(userClick);
 
         }
