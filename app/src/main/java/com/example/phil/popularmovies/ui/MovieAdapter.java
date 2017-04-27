@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,7 +30,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<Movie> mMovies;
+    private List<Movie> mMovies = new ArrayList<>();
 
     @BindView(R.id.details_poster)
     ImageView posterImageView;
@@ -40,8 +41,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
-        Movie movie;
-
 
 
         public MovieViewHolder(View itemView) {
@@ -53,7 +52,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
-
             Movie moviePosition = mMovies.get(getAdapterPosition());
 
             Context context = itemView.getContext();

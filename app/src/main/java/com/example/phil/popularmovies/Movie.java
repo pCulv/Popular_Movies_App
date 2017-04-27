@@ -7,8 +7,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class Movie implements Parcelable
 {
     @SerializedName("results")
@@ -29,9 +27,9 @@ public class Movie implements Parcelable
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = null;
+    //    @SerializedName("genre_ids")
+//    @Expose
+//    private List<Integer> genreIds;
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -71,7 +69,7 @@ public class Movie implements Parcelable
             instance.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.overview = ((String) in.readValue((String.class.getClassLoader())));
             instance.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
-            in.readList(instance.genreIds, (java.lang.Integer.class.getClassLoader()));
+//            in.readList(instance.genreIds, (java.lang.Integer.class.getClassLoader()));
             instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
             instance.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
@@ -139,13 +137,13 @@ public class Movie implements Parcelable
         this.releaseDate = releaseDate;
     }
 
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
+//    public List<Integer> getGenreIds() {
+//        return genreIds;
+//    }
+//
+//    public void setGenreIds(List<Integer> genreIds) {
+//        this.genreIds = genreIds;
+//    }
 
     public Integer getId() {
         return id;
@@ -224,7 +222,7 @@ public class Movie implements Parcelable
         dest.writeValue(adult);
         dest.writeValue(overview);
         dest.writeValue(releaseDate);
-        dest.writeList(genreIds);
+//        dest.writeList(genreIds);
         dest.writeValue(id);
         dest.writeValue(originalTitle);
         dest.writeValue(originalLanguage);
