@@ -53,7 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
-            movie = new Movie();
+
             Movie moviePosition = mMovies.get(getAdapterPosition());
 
             Context context = itemView.getContext();
@@ -62,7 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             userClick.putExtra("release_date", moviePosition.getReleaseDate());
             userClick.putExtra("vote_average", moviePosition.getVoteAverage());
             userClick.putExtra("overview",moviePosition.getOverview());
-            userClick.putExtra("poster_path", moviePosition.getVoteAverage());
+            userClick.putExtra("movie", moviePosition);
             context.startActivity(userClick);
 
         }

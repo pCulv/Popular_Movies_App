@@ -67,13 +67,13 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
-        Movie movieData = getIntent().getParcelableExtra("poster_path");
+        Movie movieData = getIntent().getParcelableExtra("movie");
 
         Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
-                .appendEncodedPath().build();
+                .appendEncodedPath(movieData.getPosterPath()).build();
 
         Picasso.with(this)
-                .load("http://image.tmdb.org/t/p/w500//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg ")
+                .load(builder)
                 .into(posterImageView);
 
     }
