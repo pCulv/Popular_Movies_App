@@ -20,7 +20,6 @@
             android:id="@+id/movie_title"
             android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_marginTop="-17dp"
             android:background="#FF5722"
             android:paddingLeft="8dp"
             android:paddingStart="8dp"
@@ -44,16 +43,14 @@
             android:layout_width="155dp"
             android:layout_height="200dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             app:layout_constraintHorizontal_bias="0.132"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title"
-            tools:layout_editor_absoluteY="98dp"
-            tools:layout_editor_absoluteX="23dp" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_title" />
 
         <TextView
             android:id="@+id/release_date"
@@ -115,44 +112,72 @@
         <TextView
             android:id="@+id/movie_description"
             android:layout_width="291dp"
-            android:layout_height="82dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Movie description"
+            app:layout_constraintHorizontal_bias="0.507"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text=""
-            app:layout_constraintHorizontal_bias="0.507"
             app:layout_constraintTop_toBottomOf="@+id/divider"
-            android:layout_marginTop="16dp" />
+            tools:text="" />
 
         <Button
             android:id="@+id/trailer_button"
             android:layout_width="118dp"
-            android:layout_height="47dp"
+            android:layout_height="48dp"
             android:text="Play Trailer"
-            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/checkBox"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="@+id/checkBox"
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+            app:layout_constraintTop_toBottomOf="@+id/checkBox"
+            android:layout_marginEnd="8dp" />
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@android:drawable/btn_star_big_off"
-            android:checked="true"
+            android:button="@drawable/star"
+            android:checked="false"
             android:text="Add to Favorites"
             android:visibility="visible"
             android:layout_marginRight="16dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/vote_average"
-            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/vote_average"
-            app:layout_constraintHorizontal_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="16dp" />
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:text="User Reviews:"
+            android:textSize="18sp"
+            app:layout_constraintHorizontal_bias="0.096"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_description"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviews_recyclerView"
+            android:layout_width="316dp"
+            android:layout_height="278dp"
+            android:scrollbars="vertical"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
