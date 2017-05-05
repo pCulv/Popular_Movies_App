@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
             releaseDate = bundle.getString("release_date");
             releaseDateView.setText(releaseDate);
             voteAverage = bundle.getDouble("vote_average");
-            voteAverageView.setText(voteAverage.toString());
+            voteAverageView.setText(voteAverage.toString() + "/10");
             overview = bundle.getString("overview");
             descriptionView.setText(overview);
 
@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Movie movieData = getIntent().getParcelableExtra("movie");
 
-        Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
+        Uri builder = Uri.parse("http://image.tmdb.org/t/p/original").buildUpon()
                 .appendEncodedPath(movieData.getPosterPath()).build();
 
         Picasso.with(this)
