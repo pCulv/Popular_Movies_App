@@ -53,6 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
             Movie moviePosition = mMovies.get(getAdapterPosition());
+            //intent extras to pass in details of each movie into DetailActivity
 
             Context context = itemView.getContext();
             Intent userClick = new Intent(context, DetailActivity.class);
@@ -97,6 +98,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mMovies.size();
     }
 
+    // TODO: Write code to retrieve perfect size for movie posters for any device.
     int imageWidth;
 
     public void setImageWidth(int imageWidth) {
