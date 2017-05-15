@@ -131,7 +131,7 @@ public class DetailActivity extends AppCompatActivity {
 
         String movieId = movieData.getId().toString();
 
-        // Fetch Popular Movies
+        // Fetch Movie Reviews
         mCall = mClient.getReviews(movieId, getString(R.string.api_key));
 
 

@@ -46,13 +46,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
 
         }
 
-        void bind(int itemIndex) {
-
-
-            authorTextView.setText("author");
-            contentTextView.setText("Help me please");
-        }
-
     }
 
     @Override
@@ -73,7 +66,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         Log.d(TAG, "#" + position);
         //TODO: populate itemView with Author and content
 
-        holder.bind(position);
+        final Review review = mReviews.get(position);
+        //Display author of review into recyclerView
+        holder.authorTextView.setText(review.getAuthor());
+        //Display content of review into recyclerView
+        holder.contentTextView.setText(review.getContent());
+
     }
 
     @Override
