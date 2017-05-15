@@ -25,7 +25,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
 
     private Context mContext;
     private List<Review> mReviews = new ArrayList<>();
-
+    private Review review;
     private LinearLayout reviewsListItem;
 
     public ReviewsAdapter(Context context, List<Review> reviews) {
@@ -45,6 +45,14 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
             contentTextView = (TextView) itemView.findViewById(R.id.tv_item_content);
 
         }
+
+        void bind(int itemIndex) {
+
+
+            authorTextView.setText("author");
+            contentTextView.setText("Help me please");
+        }
+
     }
 
     @Override
@@ -65,12 +73,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         Log.d(TAG, "#" + position);
         //TODO: populate itemView with Author and content
 
-
+        holder.bind(position);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mReviews.size();
     }
 
 

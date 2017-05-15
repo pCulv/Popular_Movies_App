@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
+import com.example.phil.popularmovies.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private Context mContext;
     private List<Movie> mMovies = new ArrayList<>();
+    private List<Review> mReviews = new ArrayList<>();
 
     @BindView(R.id.details_poster)
     ImageView posterImageView;
@@ -53,6 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
             Movie moviePosition = mMovies.get(getAdapterPosition());
+
             //intent extras to pass in details of each movie into DetailActivity
 
             Context context = itemView.getContext();
@@ -62,6 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             userClick.putExtra("vote_average", moviePosition.getVoteAverage());
             userClick.putExtra("overview",moviePosition.getOverview());
             userClick.putExtra("movie", moviePosition);
+
             context.startActivity(userClick);
 
         }

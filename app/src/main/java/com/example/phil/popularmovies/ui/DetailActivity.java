@@ -61,6 +61,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +129,10 @@ public class DetailActivity extends AppCompatActivity {
         // Create REST adapter which points to API endpoint
         mClient = retrofit.create(APIClient.class);
 
+        String movieId = movieData.getId().toString();
+
         // Fetch Popular Movies
-        mCall = mClient.getReviews("id", getString(R.string.api_key));
+        mCall = mClient.getReviews(movieId, getString(R.string.api_key));
 
 
         mCall.enqueue(new Callback<List<Review>>() {

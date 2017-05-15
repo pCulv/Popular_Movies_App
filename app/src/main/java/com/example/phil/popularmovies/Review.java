@@ -10,22 +10,16 @@ public class Review implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
-    @SerializedName("page")
+    private String id;
+    @SerializedName("author")
     @Expose
-    private Integer page;
-    @SerializedName("results")
+    private String author;
+    @SerializedName("content")
     @Expose
-    private String[] results;
-    //    @SerializedName("results")
-//    @Expose
-//    private List<Result> results = null;
-    @SerializedName("total_pages")
+    private String content;
+    @SerializedName("url")
     @Expose
-    private Integer totalPages;
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalResults;
+    private String url;
     public final static Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
 
 
@@ -34,11 +28,10 @@ public class Review implements Parcelable {
         })
         public Review createFromParcel(Parcel in) {
             Review instance = new Review();
-            instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-//            in.readList(instance.results, (com.example.phil.popularmovies.Result.class.getClassLoader()));
-            instance.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance.id = ((String) in.readValue((String.class.getClassLoader())));
+            instance.author = ((String) in.readValue((String.class.getClassLoader())));
+            instance.content = ((String) in.readValue((String.class.getClassLoader())));
+            instance.url = ((String) in.readValue((String.class.getClassLoader())));
             return instance;
         }
 
@@ -48,54 +41,43 @@ public class Review implements Parcelable {
 
     };
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getPage() {
-        return page;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setPage(Integer page) {
-        this.page = page;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    //
-    public String[] getResults() {
-        return results;
+    public String getContent() {
+        return content;
     }
 
-    //
-    public void setResults(String[] results) {
-        this.results = results;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Integer getTotalPages() {
-        return totalPages;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public Integer getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(id);
-        dest.writeValue(page);
-        dest.writeStringArray(results);
-        dest.writeValue(totalPages);
-        dest.writeValue(totalResults);
+        dest.writeValue(author);
+        dest.writeValue(content);
+        dest.writeValue(url);
     }
 
     public int describeContents() {
@@ -103,5 +85,3 @@ public class Review implements Parcelable {
     }
 
 }
-
-
