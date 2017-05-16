@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
 import com.example.phil.popularmovies.Review;
 import com.example.phil.popularmovies.ReviewsDeserializer;
+import com.example.phil.popularmovies.Video;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -40,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
     private Call<List<Review>> mCall;
     private APIClient mClient;
     private List<Review> mReviews = new ArrayList<>();
+    private List<Video> mVideos = new ArrayList<>();
+    private Video mVideo;
 
     @BindView(R.id.reviews_recyclerView)
     RecyclerView recyclerView;
@@ -59,6 +63,9 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_description)
     TextView descriptionView;
 
+    @BindView(R.id.trailer_button)
+    Button trailerButton;
+
 
 
 
@@ -67,6 +74,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+
 
         String originalTitle;
         String releaseDate;
@@ -157,7 +165,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
-
 
     }
 
