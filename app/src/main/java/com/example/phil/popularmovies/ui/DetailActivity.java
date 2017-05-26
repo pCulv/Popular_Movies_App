@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.example.phil.popularmovies.R;
 import com.example.phil.popularmovies.Review;
 import com.example.phil.popularmovies.ReviewsDeserializer;
 import com.example.phil.popularmovies.Video;
+import com.example.phil.popularmovies.VideoDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -36,14 +39,23 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ReviewsAdapter mAdapter;
+    private VideoAdapter mVideoAdapter;
     private Call<List<Review>> mCall;
+    private Call<List<Video>> mVideoCall;
     private APIClient mClient;
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
-    private Video mVideo;
+    private RecyclerView mRecyclerView;
+
+    //Variables for Youtube API
+    public static final String API_KEY = "AIzaSyCFUvOl19U5pg56BQy3Rarev3N7RnLFtTQ";
+    public static final String TEST_VIDEO_ID = "wUn05hdkhjM";
+
+    @BindView(R.id.videos_recyclerView)
+    RecyclerView videoRecyclerView;
 
     @BindView(R.id.reviews_recyclerView)
     RecyclerView recyclerView;
@@ -63,18 +75,14 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_description)
     TextView descriptionView;
 
-    @BindView(R.id.trailer_button)
-    Button trailerButton;
-
-
-
+    @BindView(R.id.checkBox)
+    CheckBox favoritesStarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-
 
         String originalTitle;
         String releaseDate;
@@ -114,6 +122,19 @@ public class DetailActivity extends AppCompatActivity {
         mAdapter = new ReviewsAdapter(DetailActivity.this, mReviews);
 
         recyclerView.setAdapter(mAdapter);
+
+        //RecyclerView code for Videos
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1,
+                LinearLayoutManager.HORIZONTAL, false);
+        videoRecyclerView.setLayoutManager(gridLayoutManager);
+
+        videoRecyclerView.setHasFixedSize(true);
+        mVideoAdapter = new VideoAdapter(DetailActivity.this, mVideos);
+
+        videoRecyclerView.setAdapter(mVideoAdapter);
+
+        //Listen for clicks of favorites checkbox
+        favoritesStarView.setOnClickListener(this);
 
         //Retrofit network request to fetch movie reviews
 
@@ -163,8 +184,60 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        //Retrofit network request to fetch movie reviews
+
+        OkHttpClient.Builder httpClient1 = new OkHttpClient.Builder();
+
+        Type listType1 = new TypeToken<List<Video>>() {
+        }.getType();
+
+
+        Gson gson1 =
+                new GsonBuilder()
+                        .registerTypeAdapter(listType1, new VideoDeserializer())
+                        .create();
+
+        Retrofit.Builder retrofitBuilder1 = new Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org/3/")
+                .addConverterFactory(GsonConverterFactory.create(gson1));
+
+        Retrofit retrofit1 = retrofitBuilder1.client(httpClient1.build()).build();
+
+        // Create REST adapter which points to API endpoint
+        mClient = retrofit1.create(APIClient.class);
+
+
+        // Fetch Movie Reviews
+        mVideoCall = mClient.getTrailer(movieId, getString(R.string.api_key));
+
+
+        mVideoCall.enqueue(new Callback<List<Video>>() {
+
+            @Override
+            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
+                List<Video> videos = response.body();
+
+                videoRecyclerView.setAdapter(new VideoAdapter(DetailActivity.this, videos));
+                Log.i("Url", response.raw().toString());
+            }
+
+            @Override
+            public void onFailure(Call<List<Video>> call, Throwable t) {
+                Toast.makeText(DetailActivity.this
+                        , "Network error, couldn't display Trailers",
+                        Toast.LENGTH_SHORT).show();
+
+                t.printStackTrace();
+            }
+        });
+
+
 
     }
 
+    @Override
+    public void onClick(View v) {
+
     }
+}
 

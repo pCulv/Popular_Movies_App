@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mMovieList;
     private Call<List<Movie>> mCall;
     private APIClient mClient;
+    private ArrayList<Movie> favlist;
 
     private List<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -159,8 +160,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        //If user clicks "Favorite Movies" in options menu
+        if (id == R.id.action_sort_by_favorite) {
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
 }
 

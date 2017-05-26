@@ -24,7 +24,9 @@ public interface APIClient {
     Call<List<Review>> getReviews(@Path("id") String id, @Query("api_key") String API_KEY);
 
     @GET("/3/movie/{id}/videos")
-    Call<List<Movie>> getTrailer(@Path("id") String id, @Query("api_key") String API_KEY);
+    Call<List<Video>> getTrailer(@Path("id") String id, @Query("api_key") String API_KEY);
+
+
 
 
 }

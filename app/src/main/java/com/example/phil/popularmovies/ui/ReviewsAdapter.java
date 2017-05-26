@@ -64,7 +64,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
     @Override
     public void onBindViewHolder(ReviewsAdapter.ReviewsViewHolder holder, int position) {
         Log.d(TAG, "#" + position);
-        //TODO: populate itemView with Author and content
 
         final Review review = mReviews.get(position);
         //Display author of review into recyclerView

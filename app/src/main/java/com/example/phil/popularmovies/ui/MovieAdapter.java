@@ -12,7 +12,6 @@ import android.widget.ImageView;
 
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
-import com.example.phil.popularmovies.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private Context mContext;
     private List<Movie> mMovies = new ArrayList<>();
-    private List<Review> mReviews = new ArrayList<>();
 
     @BindView(R.id.details_poster)
     ImageView posterImageView;
