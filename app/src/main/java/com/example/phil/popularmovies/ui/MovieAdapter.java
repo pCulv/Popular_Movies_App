@@ -62,6 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             userClick.putExtra("release_date", moviePosition.getReleaseDate());
             userClick.putExtra("vote_average", moviePosition.getVoteAverage());
             userClick.putExtra("overview",moviePosition.getOverview());
+            userClick.putExtra("id", moviePosition.getId());
             userClick.putExtra("movie", moviePosition);
 
             context.startActivity(userClick);

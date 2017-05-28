@@ -19,4 +19,18 @@
         android:title="Favorite Movies"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/fav"
+        android:title="@string/add_to_favorites"
+        android:icon="@drawable/fav_add"
+        app:showAsAction="always"
+        android:visible="false"></item>
+
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/share"
+        android:title="@string/share_movie"
+        app:showAsAction="always"
+        android:visible="false"></item>
+
 </menu>

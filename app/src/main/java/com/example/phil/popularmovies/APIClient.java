@@ -19,7 +19,6 @@ public interface APIClient {
     @GET("/3/movie/top_rated")
     Call<List<Movie>> getTopRated(@Query("api_key") String API_KEY);
 
-    // TODO: change to use List<Review>
     @GET("/3/movie/{id}/reviews")
     Call<List<Review>> getReviews(@Path("id") String id, @Query("api_key") String API_KEY);
 

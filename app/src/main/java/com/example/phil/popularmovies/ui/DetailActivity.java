@@ -8,6 +8,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -49,10 +51,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
     private RecyclerView mRecyclerView;
+    //    Realm realm = Realm.getDefaultInstance();
+    Movie movie;
 
-    //Variables for Youtube API
+
     public static final String API_KEY = "AIzaSyCFUvOl19U5pg56BQy3Rarev3N7RnLFtTQ";
-    public static final String TEST_VIDEO_ID = "wUn05hdkhjM";
+
 
     @BindView(R.id.videos_recyclerView)
     RecyclerView videoRecyclerView;
@@ -78,6 +82,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.checkBox)
     CheckBox favoritesStarView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +96,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
+
 
         if (bundle != null) {
             originalTitle = bundle.getString("original_title");
@@ -207,7 +213,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mClient = retrofit1.create(APIClient.class);
 
 
-        // Fetch Movie Reviews
+        // Fetch Movie Trailers
+
         mVideoCall = mClient.getTrailer(movieId, getString(R.string.api_key));
 
 
@@ -238,6 +245,43 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_details, menu);
+        menu.findItem(R.id.action_share).setVisible(true);
+        MenuItem item = menu.findItem(R.id.action_set_as_favorite);
+        item.setVisible(true);
+        item.setIcon(!isFavorite() ? R.drawable.fav_remove : R.drawable.fav_add);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent userClick = getIntent();
+        Bundle bundle = userClick.getExtras();
+        Integer movieId;
+        movieId = bundle.getInt("id");
+
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_share:
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, "Hey check out this movie!");
+                share.putExtra(Intent.EXTRA_TEXT, "https://www.themoviedb.org/movie/".concat(movieId.toString()));
+                startActivity(Intent.createChooser(share, "Share via"));
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isFavorite() {
+//        return realm.where(Movie.class).contains("id", movie.getId().toString()).findAll().size() != 0;
+        return true;
     }
 }
 
