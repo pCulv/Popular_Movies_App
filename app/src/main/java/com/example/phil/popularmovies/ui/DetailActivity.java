@@ -11,12 +11,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.phil.popularmovies.APIClient;
+import com.example.phil.popularmovies.MainActivity;
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
 import com.example.phil.popularmovies.Review;
@@ -29,7 +29,10 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,6 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     private ReviewsAdapter mAdapter;
     private VideoAdapter mVideoAdapter;
     private Call<List<Review>> mCall;
@@ -50,11 +54,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private APIClient mClient;
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
-    private RecyclerView mRecyclerView;
+
     //    Realm realm = Realm.getDefaultInstance();
     Movie movie;
 
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     public static final String API_KEY = "AIzaSyCFUvOl19U5pg56BQy3Rarev3N7RnLFtTQ";
 
 
@@ -79,8 +83,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.movie_description)
     TextView descriptionView;
 
-    @BindView(R.id.checkBox)
-    CheckBox favoritesStarView;
+
 
 
     @Override
@@ -91,18 +94,22 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         String originalTitle;
         String releaseDate;
+        String formattedDate;
         Double voteAverage;
         String overview;
 
+
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
+
 
 
         if (bundle != null) {
             originalTitle = bundle.getString("original_title");
             movieTitleView.setText(originalTitle);
             releaseDate = bundle.getString("release_date");
-            releaseDateView.setText(releaseDate);
+            formattedDate = formatDateFromString("yyyy-MM-dd", "MM-dd-yyyy", releaseDate);
+            releaseDateView.setText("Release Date: " + formattedDate);
             voteAverage = bundle.getDouble("vote_average");
             voteAverageView.setText(voteAverage.toString() + "/10");
             overview = bundle.getString("overview");
@@ -139,8 +146,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         videoRecyclerView.setAdapter(mVideoAdapter);
 
-        //Listen for clicks of favorites checkbox
-        favoritesStarView.setOnClickListener(this);
 
         //Retrofit network request to fetch movie reviews
 
@@ -239,7 +244,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         });
 
 
-
     }
 
     @Override
@@ -247,6 +251,25 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    public static String formatDateFromString(String inputFormat, String outputFormat, String inputDate) {
+        Date parsed = null;
+        String outputDate = "";
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, java.util.Locale.getDefault());
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, java.util.Locale.getDefault());
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = df_output.format(parsed);
+
+        } catch (ParseException e) {
+            Log.e(TAG, "ParseException - dateFormat");
+        }
+
+        return outputDate;
+
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -274,10 +297,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 share.putExtra(Intent.EXTRA_TEXT, "https://www.themoviedb.org/movie/".concat(movieId.toString()));
                 startActivity(Intent.createChooser(share, "Share via"));
                 break;
-
+//            case R.id.action_set_as_favorite:
+//                if (realm.isInTransaction())
+//                    realm.cancelTransaction();
+//                if (!isFavorite()) {
+//                    realm.beginTransaction();
+//                    item.setIcon(R.drawable.fav_add);
         }
-        return super.onOptionsItemSelected(item);
-    }
+        return true;
+        }
+
 
     private boolean isFavorite() {
 //        return realm.where(Movie.class).contains("id", movie.getId().toString()).findAll().size() != 0;

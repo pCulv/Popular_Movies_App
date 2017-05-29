@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Movie implements Parcelable
 {
+
+
     @SerializedName("results")
     @Expose
     private String[] results;
