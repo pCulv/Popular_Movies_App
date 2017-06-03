@@ -8,13 +8,16 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Movie extends RealmObject implements Parcelable
 {
 
 
     @SerializedName("results")
     @Expose
-    private String[] results;
+    private String results;
     @SerializedName("page")
     @Expose
     private Integer page;
@@ -35,7 +38,8 @@ public class Movie implements Parcelable
 //    private List<Integer> genreIds;
     @SerializedName("id")
     @Expose
-    private Integer id;
+    @PrimaryKey
+    private String id;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
@@ -73,7 +77,7 @@ public class Movie implements Parcelable
             instance.overview = ((String) in.readValue((String.class.getClassLoader())));
             instance.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
 //            in.readList(instance.genreIds, (java.lang.Integer.class.getClassLoader()));
-            instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance.id = ((String) in.readValue((Integer.class.getClassLoader())));
             instance.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
             instance.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
             instance.title = ((String) in.readValue((String.class.getClassLoader())));
@@ -92,11 +96,11 @@ public class Movie implements Parcelable
     }
             ;
 
-    public String[] getResults() {
+    public String getResults() {
         return results;
     }
 
-    public void setResults(String[] results) {
+    public void setResults(String results) {
         this.results = results;
     }
 
@@ -148,11 +152,11 @@ public class Movie implements Parcelable
 //        this.genreIds = genreIds;
 //    }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

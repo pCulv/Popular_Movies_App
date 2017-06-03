@@ -16,21 +16,21 @@
     <item
         android:id="@+id/action_sort_by_favorite"
         android:orderInCategory="2"
-        android:title="Favorite Movies"
+        android:title="@string/favorite_movies"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/fav"
         android:title="@string/add_to_favorites"
         android:icon="@drawable/fav_add"
-        app:showAsAction="always"
-        android:visible="false"></item>
+        app:showAsAction="ifRoom"
+        android:visible="false" />
 
     <item
         android:id="@+id/share"
         android:icon="@drawable/share"
         android:title="@string/share_movie"
-        app:showAsAction="always"
-        android:visible="false"></item>
+        app:showAsAction="ifRoom"
+        android:visible="false" />
 
 </menu>

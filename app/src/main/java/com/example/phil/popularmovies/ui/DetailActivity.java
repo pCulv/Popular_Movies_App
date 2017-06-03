@@ -37,6 +37,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +56,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
 
-    //    Realm realm = Realm.getDefaultInstance();
+    private Realm realm;
     Movie movie;
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -91,6 +92,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        Realm.init(this);
 
         String originalTitle;
         String releaseDate;
@@ -108,7 +110,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             originalTitle = bundle.getString("original_title");
             movieTitleView.setText(originalTitle);
             releaseDate = bundle.getString("release_date");
-            formattedDate = formatDateFromString("yyyy-MM-dd", "MM-dd-yyyy", releaseDate);
+            formattedDate = formatDateFromString("yyyy-MM-dd", "M-dd-yyyy", releaseDate);
             releaseDateView.setText("Release Date: " + formattedDate);
             voteAverage = bundle.getDouble("vote_average");
             voteAverageView.setText(voteAverage.toString() + "/10");
@@ -294,23 +296,40 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_TEXT, "Hey check out this movie!");
-                share.putExtra(Intent.EXTRA_TEXT, "https://www.themoviedb.org/movie/".concat(movieId.toString()));
+                share.putExtra(Intent.EXTRA_TEXT, "https://www.themoviedb.org/movie/"
+                        .concat(movieId.toString()));
                 startActivity(Intent.createChooser(share, "Share via"));
                 break;
-//            case R.id.action_set_as_favorite:
-//                if (realm.isInTransaction())
-//                    realm.cancelTransaction();
-//                if (!isFavorite()) {
-//                    realm.beginTransaction();
-//                    item.setIcon(R.drawable.fav_add);
+            case R.id.action_set_as_favorite:
+
+                if (realm.isInTransaction())
+                    realm.cancelTransaction();
+                if (!isFavorite()) {
+                    realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    item.setIcon(R.drawable.fav_add);
+                    realm.copyToRealm(movie);
+
+                    realm.commitTransaction();
+                } else {
+                    realm.beginTransaction();
+                    item.setIcon(R.drawable.fav_remove);
+                    realm.where(Movie.class).contains("id", movie.getId())
+                            .findFirst().deleteFromRealm();
+                    realm.commitTransaction();
+                }
+                break;
+
         }
-        return true;
-        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     private boolean isFavorite() {
-//        return realm.where(Movie.class).contains("id", movie.getId().toString()).findAll().size() != 0;
-        return true;
+        realm = Realm.getDefaultInstance();
+        return realm.where(Movie.class).contains("id", movie.getId()).findAll().size() != 0;
     }
 }
 

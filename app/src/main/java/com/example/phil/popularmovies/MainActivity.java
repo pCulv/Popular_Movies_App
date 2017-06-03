@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,10 +31,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private MovieAdapter mAdapter;
+    private MovieAdapter favoritesAdapter;
     private RecyclerView mMovieList;
     private Call<List<Movie>> mCall;
     private APIClient mClient;
     private ArrayList<Movie> favlist;
+    private Realm realm = null;
 
     private List<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        favoritesAdapter = new MovieAdapter(this, favlist);
         //Xml reference for the RecyclerView
         mMovieList = (RecyclerView) findViewById(R.id.recyclerView);
         //Layout manager for movie_list_item set to display items in a grid with a span of 2
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
         mMovieList.setAdapter(mAdapter);
+
 
 
 
@@ -104,6 +111,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getFavorites() {
+        Realm.init(this);
+
+        RealmResults<Movie> realmResults = realm.where(Movie.class).findAll();
+        Log.d("Size", String.valueOf(realmResults.size()));
+        favlist.clear();
+        for (int i = 0; i < realmResults.size(); i++) {
+            favlist.add(realmResults.get(i));
+            Log.d("fav add", realmResults.get(i).getOriginalTitle());
+        }
+        favoritesAdapter.notifyDataSetChanged();
+        Log.d("Array Size", String.valueOf(favlist.size()));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -114,59 +135,59 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-    // If user clicks "Sort by Most Popular" in option menu
-        if (id == R.id.action_sort_by_popular) {
-            //api call for most popular
-            mCall = mClient.getPopular(getString(R.string.api_key));
+        // If user clicks "Sort by Most Popular" in option menu
 
-            mCall.enqueue(new Callback<List<Movie>>() {
+        switch (id) {
+            case R.id.action_sort_by_popular:
+                //api call for most popular
+                mCall = mClient.getPopular(getString(R.string.api_key));
 
-                @Override
-                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                    List<Movie> movies = response.body();
+                mCall.enqueue(new Callback<List<Movie>>() {
 
-                    mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
-                    Log.i("Url", response.raw().toString());
-                }
+                    @Override
+                    public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                        List<Movie> movies = response.body();
 
-                @Override
-                public void onFailure(Call<List<Movie>> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+                        mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        Log.i("Url", response.raw().toString());
+                    }
 
-                    t.printStackTrace();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<List<Movie>> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+
+                        t.printStackTrace();
+                    }
+                });
+                break;
+            case R.id.action_sort_by_rating:
+                //api call for top rated
+                mCall = mClient.getTopRated(getString(R.string.api_key));
+
+                mCall.enqueue(new Callback<List<Movie>>() {
+
+                    @Override
+                    public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                        List<Movie> movies = response.body();
+
+                        mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        Log.i("Url", response.raw().toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Movie>> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+
+                        t.printStackTrace();
+                    }
+                });
+                break;
+            case R.id.action_sort_by_favorite:
+                mMovieList.setAdapter(new MovieAdapter(this, favlist));
+                getFavorites();
+                break;
         }
-        // If user clicks "Sort by Rating" in options menu
-        if (id == R.id.action_sort_by_rating){
-            //api call for top rated
-            mCall = mClient.getTopRated(getString(R.string.api_key));
-
-            mCall.enqueue(new Callback<List<Movie>>() {
-
-                @Override
-                public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                    List<Movie> movies = response.body();
-
-                    mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
-                    Log.i("Url", response.raw().toString());
-                }
-
-                @Override
-                public void onFailure(Call<List<Movie>> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
-
-                    t.printStackTrace();
-                }
-            });
-        }
-        //If user clicks "Favorite Movies" in options menu
-        if (id == R.id.action_sort_by_favorite) {
-
-        }
-
         return super.onOptionsItemSelected(item);
     }
-
 }
 
