@@ -17,6 +17,7 @@
         android:focusableInTouchMode="true"
         tools:context="com.example.phil.popularmovies.ui.DetailActivity">
 
+
         <TextView
             android:id="@+id/movie_title"
             android:layout_width="0dp"

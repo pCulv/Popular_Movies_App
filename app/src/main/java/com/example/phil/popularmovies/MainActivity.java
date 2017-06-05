@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //method for retrieving favorite movies from Realm database
     public void getFavorites() {
         Realm.init(this);
         realm = Realm.getDefaultInstance();
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 break;
+            //Sorts recyclerview by favorite movies
             case R.id.action_sort_by_favorite:
                 mAdapter = new MovieAdapter(MainActivity.this, favlist);
 

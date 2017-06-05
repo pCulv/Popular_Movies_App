@@ -3,6 +3,7 @@ package com.example.phil.popularmovies.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -91,6 +92,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
         Realm.init(this);
 
+        //adds up button to actionbar
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
         String originalTitle;
         String releaseDate;
         String formattedDate;
@@ -98,10 +103,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         String overview;
         String id;
 
-
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
-
 
 
         if (bundle != null) {
@@ -323,8 +326,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     private boolean isFavorite() {
         realm = Realm.getDefaultInstance();
