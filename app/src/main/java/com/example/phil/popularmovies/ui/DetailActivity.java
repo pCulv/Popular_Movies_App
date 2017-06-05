@@ -56,12 +56,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
 
+
     private Realm realm;
-    Movie movie;
+    private Movie movie;
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String API_KEY = "AIzaSyCFUvOl19U5pg56BQy3Rarev3N7RnLFtTQ";
-
 
     @BindView(R.id.videos_recyclerView)
     RecyclerView videoRecyclerView;
@@ -85,8 +84,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     TextView descriptionView;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +96,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         String formattedDate;
         Double voteAverage;
         String overview;
+        String id;
 
 
         Intent userClick = getIntent();
@@ -116,6 +114,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             voteAverageView.setText(voteAverage.toString() + "/10");
             overview = bundle.getString("overview");
             descriptionView.setText(overview);
+//            id = bundle.getString("id");
+//            movie.getId().equals(id);
         }
 
         Movie movieData = getIntent().getParcelableExtra("movie");
@@ -171,7 +171,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Create REST adapter which points to API endpoint
         mClient = retrofit.create(APIClient.class);
 
-        String movieId = movieData.getId().toString();
+        String movieId = movieData.getId();
 
         // Fetch Movie Reviews
         mCall = mClient.getReviews(movieId, getString(R.string.api_key));
@@ -285,10 +285,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent userClick = getIntent();
-        Bundle bundle = userClick.getExtras();
-        Integer movieId;
-        movieId = bundle.getInt("id");
+        Movie movieData = getIntent().getParcelableExtra("movie");
+        String movieId = movieData.getId();
+
 
         int id = item.getItemId();
         switch (id) {
@@ -297,7 +296,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_TEXT, "Hey check out this movie!");
                 share.putExtra(Intent.EXTRA_TEXT, "https://www.themoviedb.org/movie/"
-                        .concat(movieId.toString()));
+                        .concat(movieId));
                 startActivity(Intent.createChooser(share, "Share via"));
                 break;
             case R.id.action_set_as_favorite:
@@ -309,13 +308,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     realm.beginTransaction();
 
                     item.setIcon(R.drawable.fav_add);
-                    realm.copyToRealm(movie);
+                    realm.copyToRealm(movieData);
 
                     realm.commitTransaction();
                 } else {
                     realm.beginTransaction();
                     item.setIcon(R.drawable.fav_remove);
-                    realm.where(Movie.class).contains("id", movie.getId())
+                    realm.where(Movie.class).contains("id", movieId)
                             .findFirst().deleteFromRealm();
                     realm.commitTransaction();
                 }
@@ -329,7 +328,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private boolean isFavorite() {
         realm = Realm.getDefaultInstance();
-        return realm.where(Movie.class).contains("id", movie.getId()).findAll().size() != 0;
+        Movie movieData = getIntent().getParcelableExtra("movie");
+        String movieId = movieData.getId();
+
+        return realm.where(Movie.class).contains("id", movieId).findAll().size() != 0;
     }
 }
 

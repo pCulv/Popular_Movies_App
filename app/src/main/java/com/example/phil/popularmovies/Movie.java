@@ -64,6 +64,15 @@ public class Movie extends RealmObject implements Parcelable
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+
+    public Movie() {
+    }
+
+    public Movie(Movie movie) {
+        id = movie.id;
+    }
+
+
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
 

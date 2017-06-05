@@ -30,7 +30,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<Movie> mMovies = new ArrayList<>();
+    public List<Movie> mMovies = new ArrayList<>();
 
     @BindView(R.id.details_poster)
     ImageView posterImageView;

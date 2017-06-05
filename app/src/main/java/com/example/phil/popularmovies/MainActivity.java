@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        realm = Realm.getDefaultInstance();
+        favlist = new ArrayList<>();
         favoritesAdapter = new MovieAdapter(this, favlist);
         //Xml reference for the RecyclerView
         mMovieList = (RecyclerView) findViewById(R.id.recyclerView);
@@ -61,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
         mMovieList.setAdapter(mAdapter);
-
-
 
 
         //Retrofit network request
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getFavorites() {
         Realm.init(this);
+        realm = Realm.getDefaultInstance();
 
         RealmResults<Movie> realmResults = realm.where(Movie.class).findAll();
         Log.d("Size", String.valueOf(realmResults.size()));
@@ -183,11 +184,19 @@ public class MainActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.action_sort_by_favorite:
-                mMovieList.setAdapter(new MovieAdapter(this, favlist));
+                mAdapter = new MovieAdapter(MainActivity.this, favlist);
+
+                mMovieList.setAdapter(mAdapter);
                 getFavorites();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }
 
