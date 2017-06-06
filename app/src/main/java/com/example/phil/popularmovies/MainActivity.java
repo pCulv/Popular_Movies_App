@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private Call<List<Movie>> mCall;
     private APIClient mClient;
     private ArrayList<Movie> favlist;
-    private Realm realm = null;
 
     private List<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        realm = Realm.getDefaultInstance();
+
         favlist = new ArrayList<>();
         favoritesAdapter = new MovieAdapter(this, favlist);
         //Xml reference for the RecyclerView
@@ -113,18 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     //method for retrieving favorite movies from Realm database
     public void getFavorites() {
-        Realm.init(this);
-        realm = Realm.getDefaultInstance();
 
-        RealmResults<Movie> realmResults = realm.where(Movie.class).findAll();
-        Log.d("Size", String.valueOf(realmResults.size()));
-        favlist.clear();
-        for (int i = 0; i < realmResults.size(); i++) {
-            favlist.add(realmResults.get(i));
-            Log.d("fav add", realmResults.get(i).getOriginalTitle());
-        }
-        favoritesAdapter.notifyDataSetChanged();
-        Log.d("Array Size", String.valueOf(favlist.size()));
     }
 
     @Override
@@ -198,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
+
     }
 }
 

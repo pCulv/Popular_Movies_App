@@ -38,7 +38,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,7 +57,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private List<Video> mVideos = new ArrayList<>();
 
 
-    private Realm realm;
+
     private Movie movie;
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -90,7 +89,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        Realm.init(this);
+
 
         //adds up button to actionbar
         ActionBar ab = getSupportActionBar();
@@ -101,7 +100,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         String formattedDate;
         Double voteAverage;
         String overview;
-        String id;
+
 
         Intent userClick = getIntent();
         Bundle bundle = userClick.getExtras();
@@ -117,8 +116,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             voteAverageView.setText(voteAverage.toString() + "/10");
             overview = bundle.getString("overview");
             descriptionView.setText(overview);
-//            id = bundle.getString("id");
-//            movie.getId().equals(id);
         }
 
         Movie movieData = getIntent().getParcelableExtra("movie");
@@ -174,7 +171,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Create REST adapter which points to API endpoint
         mClient = retrofit.create(APIClient.class);
 
-        String movieId = movieData.getId();
+        String movieId = movieData.getId().toString();
 
         // Fetch Movie Reviews
         mCall = mClient.getReviews(movieId, getString(R.string.api_key));
@@ -289,7 +286,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Movie movieData = getIntent().getParcelableExtra("movie");
-        String movieId = movieData.getId();
+        String movieId = movieData.getId().toString();
 
 
         int id = item.getItemId();
@@ -304,23 +301,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.action_set_as_favorite:
 
-                if (realm.isInTransaction())
-                    realm.cancelTransaction();
-                if (!isFavorite()) {
-                    realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
 
-                    item.setIcon(R.drawable.fav_add);
-                    realm.copyToRealm(movieData);
-
-                    realm.commitTransaction();
-                } else {
-                    realm.beginTransaction();
-                    item.setIcon(R.drawable.fav_remove);
-                    realm.where(Movie.class).contains("id", movieId)
-                            .findFirst().deleteFromRealm();
-                    realm.commitTransaction();
-                }
                 break;
 
         }
@@ -328,11 +309,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private boolean isFavorite() {
-        realm = Realm.getDefaultInstance();
-        Movie movieData = getIntent().getParcelableExtra("movie");
-        String movieId = movieData.getId();
 
-        return realm.where(Movie.class).contains("id", movieId).findAll().size() != 0;
+        Movie movieData = getIntent().getParcelableExtra("movie");
+        String movieId = movieData.getId().toString();
+
+
+        return true;
     }
 }
 

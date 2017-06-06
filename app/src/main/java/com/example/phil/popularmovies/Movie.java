@@ -8,10 +8,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class Movie extends RealmObject implements Parcelable
+public class Movie implements Parcelable
 {
 
 
@@ -38,8 +36,7 @@ public class Movie extends RealmObject implements Parcelable
 //    private List<Integer> genreIds;
     @SerializedName("id")
     @Expose
-    @PrimaryKey
-    private String id;
+    private Integer id;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
@@ -65,12 +62,7 @@ public class Movie extends RealmObject implements Parcelable
     @Expose
     private Double voteAverage;
 
-    public Movie() {
-    }
 
-    public Movie(Movie movie) {
-        id = movie.id;
-    }
 
 
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -86,7 +78,7 @@ public class Movie extends RealmObject implements Parcelable
             instance.overview = ((String) in.readValue((String.class.getClassLoader())));
             instance.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
 //            in.readList(instance.genreIds, (java.lang.Integer.class.getClassLoader()));
-            instance.id = ((String) in.readValue((Integer.class.getClassLoader())));
+            instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
             instance.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
             instance.title = ((String) in.readValue((String.class.getClassLoader())));
@@ -161,11 +153,11 @@ public class Movie extends RealmObject implements Parcelable
 //        this.genreIds = genreIds;
 //    }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
