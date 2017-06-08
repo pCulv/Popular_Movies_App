@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.squareup.picasso.Picasso.with;
 
-/**
- * Created by phil on 5/16/17.
- */
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
@@ -47,11 +44,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
         @Override
         public void onClick(View v) {
+            //
             Video videoPosition = mVideos.get(getAdapterPosition());
             Context context = itemView.getContext();
             String VIDEO_ID = videoPosition.getKey();
-
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + VIDEO_ID));
+            /*Intent for trailer videos. Opens YouTube app if installed on phone, if not browser
+            will open on phone.
+             */
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + VIDEO_ID));
             context.startActivity(intent);
 
         }
@@ -74,7 +74,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     public void onBindViewHolder(VideoAdapter.VideoViewHolder holder, int position) {
         Log.d(TAG, "#" + position);
         final Video video = mVideos.get(position);
-
+        //YouTube Thumbnails
         Uri builder = Uri.parse("https://img.youtube.com/vi/").buildUpon()
                 .appendEncodedPath(video.getKey() + "/0.jpg")
                 .build();

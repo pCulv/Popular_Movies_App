@@ -1,6 +1,9 @@
 package com.example.phil.popularmovies.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -17,13 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.phil.popularmovies.APIClient;
-import com.example.phil.popularmovies.MainActivity;
+import com.example.phil.popularmovies.AndroidDatabaseManager;
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
 import com.example.phil.popularmovies.Review;
 import com.example.phil.popularmovies.ReviewsDeserializer;
 import com.example.phil.popularmovies.Video;
 import com.example.phil.popularmovies.VideoDeserializer;
+import com.example.phil.popularmovies.data.FavContract;
+import com.example.phil.popularmovies.data.FavDbHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ReviewsAdapter mAdapter;
     private VideoAdapter mVideoAdapter;
@@ -55,12 +61,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private APIClient mClient;
     private List<Review> mReviews = new ArrayList<>();
     private List<Video> mVideos = new ArrayList<>();
+    Uri mNewUri;
+    ContentValues mNewContentValues = new ContentValues();
+    int rowsDeleted;
 
-
-
-    private Movie movie;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private FavDbHelper favDbHelper = new FavDbHelper(this);
 
     @BindView(R.id.videos_recyclerView)
     RecyclerView videoRecyclerView;
@@ -279,7 +284,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         menu.findItem(R.id.action_share).setVisible(true);
         MenuItem item = menu.findItem(R.id.action_set_as_favorite);
         item.setVisible(true);
-        item.setIcon(!isFavorite() ? R.drawable.fav_remove : R.drawable.fav_add);
+        item.setIcon(isFavorite() ? R.drawable.fav_add : R.drawable.fav_remove);
         return true;
     }
 
@@ -287,6 +292,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         Movie movieData = getIntent().getParcelableExtra("movie");
         String movieId = movieData.getId().toString();
+        String movieTitle = movieData.getOriginalTitle();
+        String mSelectionClause = FavContract.FavoriteEntry.COLUMN_MOVIE_ID + " LIKE ?";
+        String[] mSelectionArgs = {movieId + "%"};
+
 
 
         int id = item.getItemId();
@@ -300,9 +309,33 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(Intent.createChooser(share, "Share via"));
                 break;
             case R.id.action_set_as_favorite:
+                if (!isFavorite()) {
 
+                    item.setIcon(R.drawable.fav_add);
+                    //inserts Movie into favorites database if it is not already present in the database
+                    mNewContentValues.put(FavContract.FavoriteEntry.COLUMN_MOVIE_ID, movieId);
+                    mNewContentValues.put(FavContract.FavoriteEntry.COLUMN_TITLE, movieTitle);
 
+                    mNewUri = getContentResolver()
+                            .insert(FavContract.FavoriteEntry.CONTENT_URI, mNewContentValues);
+                    Toast.makeText(this, movieTitle + " added to favorites", Toast.LENGTH_SHORT).show();
+                } else if (isFavorite()) {
+
+                    item.setIcon(R.drawable.fav_remove);
+                    rowsDeleted = getContentResolver().delete(
+                            FavContract.FavoriteEntry.CONTENT_URI,
+                            mSelectionClause,
+                            mSelectionArgs
+                    );
+//                    Uri uri = FavContract.FavoriteEntry
+//                            .CONTENT_URI.buildUpon().appendPath(movieId).build();
+//                    getContentResolver().delete(uri, "_id", null);
+                    Toast.makeText(this, movieTitle + " removed from favorites", Toast.LENGTH_SHORT).show();
+                }
                 break;
+            case R.id.showDatabase:
+                Intent dbmanager = new Intent(DetailActivity.this, AndroidDatabaseManager.class);
+                startActivity(dbmanager);
 
         }
         return super.onOptionsItemSelected(item);
@@ -311,10 +344,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isFavorite() {
 
         Movie movieData = getIntent().getParcelableExtra("movie");
-        String movieId = movieData.getId().toString();
+        String movie_Id = movieData.getId().toString();
+        final SQLiteDatabase db = favDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM "
+                + FavContract.FavoriteEntry.TABLE_NAME + " WHERE movie_id = '" + movie_Id + "'", null);
+        boolean isFavorite = (cursor.getCount() > 0);
+        cursor.close();
+        db.close();
 
-
-        return true;
+        return isFavorite;
     }
 }
 

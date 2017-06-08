@@ -30,7 +30,26 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+
         </activity>
+
+        <activity
+            android:name="com.example.phil.popularmovies.AndroidDatabaseManager"
+            android:label="@string/app_name">
+
+        </activity>
+
+        <!-- The Content Provider is declared-->
+
+        <provider
+            android:authorities="com.example.phil.popularmovies.data.FavoritesProvider"
+            android:name=".data.FavoritesProvider"
+            android:exported="true"
+            android:multiprocess="true">
+
+        </provider>
+
+
     </application>
 
 </manifest>

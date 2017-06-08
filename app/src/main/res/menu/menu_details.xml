@@ -13,5 +13,10 @@
         android:title="@string/share_movie"
         android:icon="@drawable/share"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/showDatabase"
+        android:title="Show Database"
+        app:showAsAction="never"
+        android:visible="true" />
 
 </menu>
