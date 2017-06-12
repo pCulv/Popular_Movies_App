@@ -18,7 +18,7 @@ public class FavDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favorite.db";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     SQLiteOpenHelper dbhandler;
     SQLiteDatabase db;
@@ -35,9 +35,9 @@ public class FavDbHelper extends SQLiteOpenHelper {
                 .TABLE_NAME + " (" +
                 FavContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 FavContract.FavoriteEntry.COLUMN_MOVIE_ID + " INTEGER, " +
-                FavContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL" +
+                FavContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
 //                FavContract.FavoriteEntry.COLUMN_USER_RATING + " REAL NOT NULL, " +
-//                FavContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                FavContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL" +
 //                FavContract.FavoriteEntry.COLUMN_OVERVIEW + " TEXT NOT NULL" +
                 "); ";
 

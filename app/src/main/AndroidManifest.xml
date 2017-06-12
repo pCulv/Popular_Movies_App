@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.phil.popularmovies.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,34 +21,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--Child of main activity-->
+        <!-- Child of main activity -->
         <activity
-            android:name="com.example.phil.popularmovies.ui.DetailActivity"
+            android:name=".ui.DetailActivity"
             android:label="@string/title_detail_activity"
             android:parentActivityName=".MainActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
         </activity>
-
         <activity
-            android:name="com.example.phil.popularmovies.AndroidDatabaseManager"
-            android:label="@string/app_name">
+            android:name=".AndroidDatabaseManager"
+            android:label="@string/app_name"></activity>
 
-        </activity>
-
-        <!-- The Content Provider is declared-->
+        <!-- The Content Provider is declared -->
 
         <provider
-            android:authorities="com.example.phil.popularmovies.data.FavoritesProvider"
             android:name=".data.FavoritesProvider"
+            android:authorities="com.example.phil.popularmovies.data.FavoritesProvider"
             android:exported="true"
-            android:multiprocess="true">
-
-        </provider>
-
+            android:multiprocess="true"></provider>
 
     </application>
 

@@ -293,6 +293,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Movie movieData = getIntent().getParcelableExtra("movie");
         String movieId = movieData.getId().toString();
         String movieTitle = movieData.getOriginalTitle();
+        String moviePoster = "http://image.tmdb.org/t/p/w500" + movieData.getPosterPath();
         String mSelectionClause = FavContract.FavoriteEntry.COLUMN_MOVIE_ID + " LIKE ?";
         String[] mSelectionArgs = {movieId + "%"};
 
@@ -315,6 +316,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     //inserts Movie into favorites database if it is not already present in the database
                     mNewContentValues.put(FavContract.FavoriteEntry.COLUMN_MOVIE_ID, movieId);
                     mNewContentValues.put(FavContract.FavoriteEntry.COLUMN_TITLE, movieTitle);
+                    mNewContentValues.put(FavContract.FavoriteEntry.COLUMN_POSTER_PATH, moviePoster);
 
                     mNewUri = getContentResolver()
                             .insert(FavContract.FavoriteEntry.CONTENT_URI, mNewContentValues);

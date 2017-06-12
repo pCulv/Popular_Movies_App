@@ -1,6 +1,11 @@
 package com.example.phil.popularmovies;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.phil.popularmovies.data.FavContract;
 import com.example.phil.popularmovies.ui.MovieAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +24,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,14 +31,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MovieAdapter mAdapter;
-    private MovieAdapter favoritesAdapter;
-    private RecyclerView mMovieList;
+
+    private RecyclerView mRecyclerView;
     private Call<List<Movie>> mCall;
     private APIClient mClient;
-    private ArrayList<Movie> favlist;
+    private static final int FAVORITES_LOADER = 0;
+    private List<Movie> favList;
+
 
     private List<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -42,24 +49,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
-
-        favlist = new ArrayList<>();
-        favoritesAdapter = new MovieAdapter(this, favlist);
         //Xml reference for the RecyclerView
-        mMovieList = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         //Layout manager for movie_list_item set to display items in a grid with a span of 2
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,
                 2, GridLayoutManager.VERTICAL, false);
-        mMovieList.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
 
         // Child layout size will be fixed in the RecyclerView
-        mMovieList.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
         mAdapter = new MovieAdapter(MainActivity.this, mMovies);
 
-        mMovieList.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
+
+
 
 
         //Retrofit network request
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 List<Movie> movies = response.body();
 
-                mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
                 Log.i("Url", response.raw().toString());
             }
 
@@ -108,10 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //method for retrieving favorite movies from Realm database
-    public void getFavorites() {
+    //method for retrieving favorite movies from SQLite database
 
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                         List<Movie> movies = response.body();
 
-                        mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
                         Log.i("Url", response.raw().toString());
                     }
 
@@ -158,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                         List<Movie> movies = response.body();
 
-                        mMovieList.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
                         Log.i("Url", response.raw().toString());
                     }
 
@@ -172,18 +175,49 @@ public class MainActivity extends AppCompatActivity {
                 break;
             //Sorts recyclerview by favorite movies
             case R.id.action_sort_by_favorite:
-                mAdapter = new MovieAdapter(MainActivity.this, favlist);
 
-                mMovieList.setAdapter(mAdapter);
-                getFavorites();
-                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = new CursorLoader(
+                MainActivity.this,
+                FavContract.FavoriteEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }
