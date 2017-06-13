@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         String movieTitle = mCursor.getString(movieTitleIndex);
                         String moviePoster = mCursor.getString(moviePosterIndex);
 
+                        favMovie = new Movie(id, movieTitle, moviePoster);
                         favMovie.setId(movieId);
                         favMovie.setOriginalTitle(movieTitle);
                         favMovie.setPosterPath(moviePoster);
@@ -246,8 +247,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-
+        mAdapter = new MovieAdapter(this, favlist);
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
 import com.example.phil.popularmovies.Movie;
@@ -32,7 +31,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private Context mContext;
     public List<Movie> mMovies = new ArrayList<>();
-    CursorAdapter mCursorAdapter;
+    public ArrayList<Movie> favMovies = new ArrayList<>();
+
 
     @BindView(R.id.details_poster)
     ImageView posterImageView;
@@ -117,6 +117,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }else{
             this.imageWidth=185;
         }
+
+    }
+
+    public void displayFavorites() {
 
     }
 
