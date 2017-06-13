@@ -34,12 +34,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MovieAdapter mAdapter;
+    private Cursor mCursor;
+    private ArrayList<Movie> favlist = new ArrayList<>();
+    Movie favMovie;
 
     private RecyclerView mRecyclerView;
     private Call<List<Movie>> mCall;
     private APIClient mClient;
     private static final int FAVORITES_LOADER = 0;
-    private List<Movie> favList;
+
 
 
     private List<Movie> mMovies = new ArrayList<>();
@@ -175,6 +178,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             //Sorts recyclerview by favorite movies
             case R.id.action_sort_by_favorite:
+                getSupportLoaderManager().initLoader(FAVORITES_LOADER, null, this);
+
+                String[] projection = {
+                        FavContract.FavoriteEntry.COLUMN_MOVIE_ID,
+                        FavContract.FavoriteEntry.COLUMN_TITLE,
+                        FavContract.FavoriteEntry.COLUMN_POSTER_PATH
+                };
+
+                mCursor = getContentResolver().query(FavContract.FavoriteEntry.CONTENT_URI,
+                        projection, null, null, null);
+                int movieIdIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_MOVIE_ID);
+                int movieTitleIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_TITLE);
+                int moviePosterIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_POSTER_PATH);
+
+
+                if (mCursor != null) {
+                    while (mCursor.moveToNext()) {
+                        int movieId = mCursor.getInt(movieIdIndex);
+                        String movieTitle = mCursor.getString(movieTitleIndex);
+                        String moviePoster = mCursor.getString(moviePosterIndex);
+
+                        favMovie.setId(movieId);
+                        favMovie.setOriginalTitle(movieTitle);
+                        favMovie.setPosterPath(moviePoster);
+
+                        favlist.add(movieIdIndex, favMovie);
+                    }
+                }
 
 
         }

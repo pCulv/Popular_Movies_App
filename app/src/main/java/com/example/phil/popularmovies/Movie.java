@@ -9,9 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Movie implements Parcelable
-{
-
+public class Movie implements Parcelable {
 
     @SerializedName("results")
     @Expose
@@ -246,4 +244,12 @@ public class Movie implements Parcelable
         return 0;
     }
 
+    public Movie() {
+    }
+
+    public Movie(Integer id, String title, String posterPath) {
+        this.id = id;
+        this.originalTitle = title;
+        this.posterPath = posterPath;
+    }
 }
