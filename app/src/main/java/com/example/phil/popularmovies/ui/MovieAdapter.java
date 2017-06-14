@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.example.phil.popularmovies.Movie;
 import com.example.phil.popularmovies.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +94,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Uri builder = Uri.parse("http://image.tmdb.org/t/p/w500").buildUpon()
                 .appendEncodedPath(movie.getPosterPath())
                 .build();
-
+        Log.d(TAG, "Image url: " + builder.toString());
         with(mContext).load(builder).into(holder.movieItemView);
+        Picasso.with(mContext).setLoggingEnabled(true);
 
     }
 

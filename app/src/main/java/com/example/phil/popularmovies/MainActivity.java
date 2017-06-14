@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 int moviePosterIndex =
                         mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_POSTER_PATH);
 
-
+                //query for favorite movies from content resolver and sqlite db
                 if (mCursor != null) {
                     while (mCursor.moveToNext()) {
                         int movieId = mCursor.getInt(movieIdIndex);
@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO: add app lifecycle awareness
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);

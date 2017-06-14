@@ -293,7 +293,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Movie movieData = getIntent().getParcelableExtra("movie");
         String movieId = movieData.getId().toString();
         String movieTitle = movieData.getOriginalTitle();
-        String moviePoster = "http://image.tmdb.org/t/p/w500" + movieData.getPosterPath();
+        String moviePoster = movieData.getPosterPath();
         String mSelectionClause = FavContract.FavoriteEntry.COLUMN_MOVIE_ID + " LIKE ?";
         String[] mSelectionArgs = {movieId + "%"};
 
