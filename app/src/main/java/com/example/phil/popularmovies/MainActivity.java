@@ -183,7 +183,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String[] projection = {
                         FavContract.FavoriteEntry.COLUMN_MOVIE_ID,
                         FavContract.FavoriteEntry.COLUMN_TITLE,
-                        FavContract.FavoriteEntry.COLUMN_POSTER_PATH
+                        FavContract.FavoriteEntry.COLUMN_USER_RATING,
+                        FavContract.FavoriteEntry.COLUMN_POSTER_PATH,
+                        FavContract.FavoriteEntry.COLUMN_OVERVIEW,
+                        FavContract.FavoriteEntry.COLUMN_RELEASE_DATE
                 };
 
                 mCursor = getContentResolver().query(FavContract.FavoriteEntry.CONTENT_URI,
@@ -192,20 +195,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_MOVIE_ID);
                 int movieTitleIndex =
                         mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_TITLE);
+                int movieRatingIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_USER_RATING);
                 int moviePosterIndex =
                         mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_POSTER_PATH);
+                int movieOVIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_OVERVIEW);
+                int movieReleaseIndex =
+                        mCursor.getColumnIndex(FavContract.FavoriteEntry.COLUMN_RELEASE_DATE);
 
                 //query for favorite movies from content resolver and sqlite db
                 if (mCursor != null) {
                     while (mCursor.moveToNext()) {
                         int movieId = mCursor.getInt(movieIdIndex);
                         String movieTitle = mCursor.getString(movieTitleIndex);
+                        double userRating = mCursor.getInt(movieRatingIndex);
                         String moviePoster = mCursor.getString(moviePosterIndex);
+                        String movieOV = mCursor.getString(movieOVIndex);
+                        String movieRelease = mCursor.getString(movieReleaseIndex);
 
                         favMovie = new Movie(id, movieTitle, moviePoster);
                         favMovie.setId(movieId);
                         favMovie.setOriginalTitle(movieTitle);
+                        favMovie.setVoteAverage(userRating);
                         favMovie.setPosterPath(moviePoster);
+                        favMovie.setOverview(movieOV);
+                        favMovie.setReleaseDate(movieRelease);
 
                         favlist.add(movieIdIndex, favMovie);
                     }
