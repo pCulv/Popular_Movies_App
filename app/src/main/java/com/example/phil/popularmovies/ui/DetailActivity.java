@@ -39,7 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,11 +55,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private ReviewsAdapter mAdapter;
     private VideoAdapter mVideoAdapter;
-    private Call<List<Review>> mCall;
-    private Call<List<Video>> mVideoCall;
+    private Call<ArrayList<Review>> mCall;
+    private Call<ArrayList<Video>> mVideoCall;
     private APIClient mClient;
-    private List<Review> mReviews = new ArrayList<>();
-    private List<Video> mVideos = new ArrayList<>();
+    private ArrayList<Review> mReviews = new ArrayList<>();
+    private ArrayList<Video> mVideos = new ArrayList<>();
     Uri mNewUri;
     ContentValues mNewContentValues = new ContentValues();
     int rowsDeleted;
@@ -158,7 +157,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        Type listType = new TypeToken<List<Review>>() {
+        Type listType = new TypeToken<ArrayList<Review>>() {
         }.getType();
 
 
@@ -182,18 +181,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mCall = mClient.getReviews(movieId, getString(R.string.api_key));
 
 
-        mCall.enqueue(new Callback<List<Review>>() {
+        mCall.enqueue(new Callback<ArrayList<Review>>() {
 
             @Override
-            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
-                List<Review> reviews = response.body();
+            public void onResponse(Call<ArrayList<Review>> call, Response<ArrayList<Review>> response) {
+                ArrayList<Review> reviews = response.body();
 
                 recyclerView.setAdapter(new ReviewsAdapter(DetailActivity.this, reviews));
                 Log.i("Url", response.raw().toString());
             }
 
             @Override
-            public void onFailure(Call<List<Review>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Review>> call, Throwable t) {
                 Toast.makeText(DetailActivity.this
                         , "Network error, couldn't display User Reviews",
                         Toast.LENGTH_SHORT).show();
@@ -206,7 +205,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         OkHttpClient.Builder httpClient1 = new OkHttpClient.Builder();
 
-        Type listType1 = new TypeToken<List<Video>>() {
+        Type listType1 = new TypeToken<ArrayList<Video>>() {
         }.getType();
 
 
@@ -230,18 +229,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mVideoCall = mClient.getTrailer(movieId, getString(R.string.api_key));
 
 
-        mVideoCall.enqueue(new Callback<List<Video>>() {
+        mVideoCall.enqueue(new Callback<ArrayList<Video>>() {
 
             @Override
-            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
-                List<Video> videos = response.body();
+            public void onResponse(Call<ArrayList<Video>> call, Response<ArrayList<Video>> response) {
+                ArrayList<Video> videos = response.body();
 
                 videoRecyclerView.setAdapter(new VideoAdapter(DetailActivity.this, videos));
                 Log.i("Url", response.raw().toString());
             }
 
             @Override
-            public void onFailure(Call<List<Video>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Video>> call, Throwable t) {
                 Toast.makeText(DetailActivity.this
                         , "Network error, couldn't display Trailers",
                         Toast.LENGTH_SHORT).show();

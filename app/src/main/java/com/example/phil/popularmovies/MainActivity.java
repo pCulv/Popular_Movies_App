@@ -2,7 +2,6 @@ package com.example.phil.popularmovies;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -22,7 +21,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -39,19 +37,67 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Movie favMovie;
 
     private RecyclerView mRecyclerView;
-    private Call<List<Movie>> mCall;
+    private Call<ArrayList<Movie>> mCall;
     private APIClient mClient;
     private static final int FAVORITES_LOADER = 0;
+    public static final String MOVIES_KEY = "movies_key";
 
 
-
-    private List<Movie> mMovies = new ArrayList<>();
+    private ArrayList<Movie> mMovies = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_KEY);
+        } else {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+            Type listType = new TypeToken<ArrayList<Movie>>() {
+            }.getType();
+
+
+            Gson gson =
+                    new GsonBuilder()
+                            .registerTypeAdapter(listType, new Deserializer())
+                            .create();
+
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("https://api.themoviedb.org/3/")
+                    .addConverterFactory(GsonConverterFactory.create(gson));
+
+            Retrofit retrofit = builder.client(httpClient.build()).build();
+
+            // Create REST adapter which points to API endpoint
+            mClient = retrofit.create(APIClient.class);
+
+            // Fetch Popular Movies
+            mCall = mClient.getPopular(getString(R.string.api_key));
+
+
+            mCall.enqueue(new Callback<ArrayList<Movie>>() {
+
+                @Override
+                public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
+                    ArrayList<Movie> movies = response.body();
+
+                    mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                    Log.i("Url", response.raw().toString());
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+
+                    t.printStackTrace();
+                }
+            });
+        }
+
 
         //Xml reference for the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -68,56 +114,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setAdapter(mAdapter);
 
 
-
-
         //Retrofit network request
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        Type listType = new TypeToken<List<Movie>>() {
-        }.getType();
-
-
-        Gson gson =
-                new GsonBuilder()
-                        .registerTypeAdapter(listType, new Deserializer())
-                        .create();
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create(gson));
-
-        Retrofit retrofit = builder.client(httpClient.build()).build();
-
-        // Create REST adapter which points to API endpoint
-        mClient = retrofit.create(APIClient.class);
-
-        // Fetch Popular Movies
-        mCall = mClient.getPopular(getString(R.string.api_key));
-
-
-        mCall.enqueue(new Callback<List<Movie>>() {
-
-            @Override
-            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                List<Movie> movies = response.body();
-
-                mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
-                Log.i("Url", response.raw().toString());
-            }
-
-            @Override
-            public void onFailure(Call<List<Movie>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
-
-                t.printStackTrace();
-            }
-        });
 
     }
-
     //method for retrieving favorite movies from SQLite database
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,18 +137,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 //api call for most popular
                 mCall = mClient.getPopular(getString(R.string.api_key));
 
-                mCall.enqueue(new Callback<List<Movie>>() {
+                mCall.enqueue(new Callback<ArrayList<Movie>>() {
 
                     @Override
-                    public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                        List<Movie> movies = response.body();
+                    public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
+                        ArrayList<Movie> movies = response.body();
 
                         mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
                         Log.i("Url", response.raw().toString());
                     }
 
                     @Override
-                    public void onFailure(Call<List<Movie>> call, Throwable t) {
+                    public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
                         Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
 
                         t.printStackTrace();
@@ -158,18 +159,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 //api call for top rated
                 mCall = mClient.getTopRated(getString(R.string.api_key));
 
-                mCall.enqueue(new Callback<List<Movie>>() {
+                mCall.enqueue(new Callback<ArrayList<Movie>>() {
 
                     @Override
-                    public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                        List<Movie> movies = response.body();
+                    public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
+                        ArrayList<Movie> movies = response.body();
 
                         mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
                         Log.i("Url", response.raw().toString());
                     }
 
                     @Override
-                    public void onFailure(Call<List<Movie>> call, Throwable t) {
+                    public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
                         Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
 
                         t.printStackTrace();
@@ -233,12 +234,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     //TODO: add app lifecycle awareness
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(MOVIES_KEY, mMovies);
+
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -247,8 +251,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onDestroy();
 
     }
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = new CursorLoader(
@@ -260,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 null);
         return loader;
     }
-
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter = new MovieAdapter(this, favlist);
@@ -270,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        favlist.clear();
     }
 }
 

@@ -7,17 +7,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by phil on 4/19/17.
  */
 
-public class Deserializer implements JsonDeserializer<List<Movie>> {
+public class Deserializer implements JsonDeserializer<ArrayList<Movie>> {
 
 
     @Override
-    public List<Movie> deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+    public ArrayList<Movie> deserialize(JsonElement json, Type type, JsonDeserializationContext context)
             throws JsonParseException {
 
         //Get the movie results from the parsed JSON

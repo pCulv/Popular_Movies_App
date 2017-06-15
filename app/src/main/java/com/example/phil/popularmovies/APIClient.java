@@ -1,6 +1,6 @@
 package com.example.phil.popularmovies;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,16 +14,16 @@ import retrofit2.http.Query;
 public interface APIClient {
 
     @GET("/3/movie/popular")
-    Call<List<Movie>> getPopular(@Query("api_key") String API_KEY);
+    Call<ArrayList<Movie>> getPopular(@Query("api_key") String API_KEY);
 
     @GET("/3/movie/top_rated")
-    Call<List<Movie>> getTopRated(@Query("api_key") String API_KEY);
+    Call<ArrayList<Movie>> getTopRated(@Query("api_key") String API_KEY);
 
     @GET("/3/movie/{id}/reviews")
-    Call<List<Review>> getReviews(@Path("id") String id, @Query("api_key") String API_KEY);
+    Call<ArrayList<Review>> getReviews(@Path("id") String id, @Query("api_key") String API_KEY);
 
     @GET("/3/movie/{id}/videos")
-    Call<List<Video>> getTrailer(@Path("id") String id, @Query("api_key") String API_KEY);
+    Call<ArrayList<Video>> getTrailer(@Path("id") String id, @Query("api_key") String API_KEY);
 
 
 
