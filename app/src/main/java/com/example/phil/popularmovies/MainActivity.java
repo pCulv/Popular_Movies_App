@@ -1,5 +1,6 @@
 package com.example.phil.popularmovies;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -37,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Movie favMovie;
 
     private RecyclerView mRecyclerView;
-    private Call<ArrayList<Movie>> mCall;
-    private APIClient mClient;
+
+
     private static final int FAVORITES_LOADER = 0;
     public static final String MOVIES_KEY = "movies_key";
 
@@ -50,55 +51,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        if (savedInstanceState != null) {
-            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_KEY);
-        } else {
-            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-            Type listType = new TypeToken<ArrayList<Movie>>() {
-            }.getType();
-
-
-            Gson gson =
-                    new GsonBuilder()
-                            .registerTypeAdapter(listType, new Deserializer())
-                            .create();
-
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/3/")
-                    .addConverterFactory(GsonConverterFactory.create(gson));
-
-            Retrofit retrofit = builder.client(httpClient.build()).build();
-
-            // Create REST adapter which points to API endpoint
-            mClient = retrofit.create(APIClient.class);
-
-            // Fetch Popular Movies
-            mCall = mClient.getPopular(getString(R.string.api_key));
-
-
-            mCall.enqueue(new Callback<ArrayList<Movie>>() {
-
-                @Override
-                public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
-                    ArrayList<Movie> movies = response.body();
-
-                    mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
-                    Log.i("Url", response.raw().toString());
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
-
-                    t.printStackTrace();
-                }
-            });
-        }
-
-
         //Xml reference for the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         //Layout manager for movie_list_item set to display items in a grid with a span of 2
@@ -114,9 +66,53 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setAdapter(mAdapter);
 
 
-        //Retrofit network request
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_KEY);
+            mAdapter = new MovieAdapter(MainActivity.this, mMovies);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+            Type listType = new TypeToken<ArrayList<Movie>>() {
+            }.getType();
 
+            Gson gson =
+                    new GsonBuilder()
+                            .registerTypeAdapter(listType, new Deserializer())
+                            .create();
+
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("https://api.themoviedb.org/3/")
+                    .addConverterFactory(GsonConverterFactory.create(gson));
+
+            Retrofit retrofit = builder.client(httpClient.build()).build();
+
+            // Create REST adapter which points to API endpoint
+            APIClient mClient = retrofit.create(APIClient.class);
+
+            // Fetch Popular Movies
+            Call<ArrayList<Movie>> mCall = mClient.getPopular(getString(R.string.api_key));
+
+            mCall.enqueue(new Callback<ArrayList<Movie>>() {
+
+                @Override
+                public void onResponse(Call<ArrayList<Movie>> call,
+                                       Response<ArrayList<Movie>> response) {
+                    mMovies = response.body();
+
+                    mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, mMovies));
+                    Log.i("Url", response.raw().toString());
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION",
+                            Toast.LENGTH_SHORT).show();
+
+                    t.printStackTrace();
+                }
+            });
+        }
     }
     //method for retrieving favorite movies from SQLite database
 
@@ -135,21 +131,39 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (id) {
             case R.id.action_sort_by_popular:
                 //api call for most popular
-                mCall = mClient.getPopular(getString(R.string.api_key));
+                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+                Type listType = new TypeToken<ArrayList<Movie>>() {
+                }.getType();
+
+                Gson gson =
+                        new GsonBuilder()
+                                .registerTypeAdapter(listType, new Deserializer())
+                                .create();
+
+                Retrofit.Builder builder = new Retrofit.Builder()
+                        .baseUrl("https://api.themoviedb.org/3/")
+                        .addConverterFactory(GsonConverterFactory.create(gson));
+
+                Retrofit retrofit = builder.client(httpClient.build()).build();
+                APIClient mClient = retrofit.create(APIClient.class);
+                Call<ArrayList<Movie>> mCall = mClient.getPopular(getString(R.string.api_key));
 
                 mCall.enqueue(new Callback<ArrayList<Movie>>() {
 
                     @Override
-                    public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
-                        ArrayList<Movie> movies = response.body();
+                    public void onResponse(Call<ArrayList<Movie>> call,
+                                           Response<ArrayList<Movie>> response) {
+                        mMovies = response.body();
 
-                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, mMovies));
                         Log.i("Url", response.raw().toString());
                     }
 
                     @Override
                     public void onFailure(Call<ArrayList<Movie>> call, Throwable t) {
-                        Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "ERROR NO NETWORK CONNECTION",
+                                Toast.LENGTH_SHORT).show();
 
                         t.printStackTrace();
                     }
@@ -157,15 +171,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             case R.id.action_sort_by_rating:
                 //api call for top rated
-                mCall = mClient.getTopRated(getString(R.string.api_key));
+                OkHttpClient.Builder httpClient2 = new OkHttpClient.Builder();
+
+                Type listType2 = new TypeToken<ArrayList<Movie>>() {
+                }.getType();
+
+                Gson gson2 =
+                        new GsonBuilder()
+                                .registerTypeAdapter(listType2, new Deserializer())
+                                .create();
+
+                Retrofit.Builder builder2 = new Retrofit.Builder()
+                        .baseUrl("https://api.themoviedb.org/3/")
+                        .addConverterFactory(GsonConverterFactory.create(gson2));
+
+                Retrofit retrofit2 = builder2.client(httpClient2.build()).build();
+                APIClient mClient2 = retrofit2.create(APIClient.class);
+                mCall = mClient2.getTopRated(getString(R.string.api_key));
 
                 mCall.enqueue(new Callback<ArrayList<Movie>>() {
 
                     @Override
                     public void onResponse(Call<ArrayList<Movie>> call, Response<ArrayList<Movie>> response) {
-                        ArrayList<Movie> movies = response.body();
+                        mMovies = response.body();
 
-                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, movies));
+                        mRecyclerView.setAdapter(new MovieAdapter(MainActivity.this, mMovies));
                         Log.i("Url", response.raw().toString());
                     }
 
@@ -179,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             //Sorts recyclerview by favorite movies
             case R.id.action_sort_by_favorite:
+                mMovies.clear();
                 getSupportLoaderManager().initLoader(FAVORITES_LOADER, null, this);
 
                 String[] projection = {
@@ -223,20 +254,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         favMovie.setOverview(movieOV);
                         favMovie.setReleaseDate(movieRelease);
 
-                        favlist.add(movieIdIndex, favMovie);
+
+                        mMovies.add(movieIdIndex, favMovie);
+
                     }
                 }
-
+                break;
+            case R.id.action_settings:
+                Intent startSettings = new Intent(this, SettingsActivity.class);
+                startActivity(startSettings);
+                return true;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO: add app lifecycle awareness
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIES_KEY, mMovies);
+
 
     }
 
@@ -264,14 +302,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter = new MovieAdapter(this, favlist);
+        mAdapter = new MovieAdapter(this, mMovies);
         mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        favlist.clear();
+        mMovies.clear();
     }
 }
 
