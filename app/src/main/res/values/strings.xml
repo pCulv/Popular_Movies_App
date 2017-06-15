@@ -2,7 +2,7 @@
     <string name="app_name">Popular Movies</string>
     <string name="Sort_by_rating">Sort by Rating</string>
     <string name="sort_by_popular">Sort by Most Popular</string>
-    <string name="api_key">50702822a126f3d3f8288773eab942a6</string>
+    <string name="api_key">ENTER API HERE</string>
     <string name="add_to_favorites">Add To Favorites</string>
     <string name="set_as_favorite">Set As Favorite</string>
     <string name="share_movie">Share Movie</string>
