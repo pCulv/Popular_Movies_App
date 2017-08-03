@@ -19,8 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.squareup.picasso.Picasso.with;
-
 /**
  * Created by phil on 4/1/17.
  */
@@ -95,7 +93,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 .appendEncodedPath(movie.getPosterPath())
                 .build();
         Log.d(TAG, "Image url: " + builder.toString());
-        with(mContext).load(builder).into(holder.movieItemView);
+        Picasso.with(mContext)
+                .load(builder)
+                .resize(500, 800)
+                .centerInside()
+                .into(holder.movieItemView);
         Picasso.with(mContext).setLoggingEnabled(true);
 
     }
