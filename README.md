@@ -33,6 +33,7 @@ You will build a fully featured application that looks and feels natural on the 
 
 ## Screen Shots 
 
+![popular movies app mock up](https://user-images.githubusercontent.com/20853402/29074554-bf6fde06-7c1d-11e7-94f8-a4c298d4520a.png)
 
 ## Rubric
 
