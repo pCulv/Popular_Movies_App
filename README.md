@@ -1,3 +1,6 @@
+[![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=5989c1f431b84f0001ea3ef8&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/5989c1f431b84f0001ea3ef8/build/latest?branch=master)
+
+
 # Popular Movies App
 Movie review and database App for Udacity Android Developer Nanodegree Project 1 & 2
 
